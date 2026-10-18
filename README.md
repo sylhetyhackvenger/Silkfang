@@ -1,1189 +1,1684 @@
+SILKFANG
 
 <div align="center">
-
 # Website Recon Engine & A Powerful Crawler
+attack-surface intelligence for gray-hat operators
 
-Attack Surface Mapping · Secret Mining · Passive & Active Recon · Real-Time Streaming
-
-https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white
-https://img.shields.io/badge/License-Authorization_Only-red?style=flat-square
-https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=flat-square
-https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square
-https://img.shields.io/badge/Author-SYLHETYHACKVENGER-9b59b6?style=flat-square
-
-⚡ Quick Start · 🎯 Features · 📖 Usage · 🔬 Detection Catalog · ⚠️ Legal
+https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white
+https://img.shields.io/badge/License-MIT-green?style=for-the-badge
+https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge
+https://img.shields.io/badge/Author-SYLHETYHACKVENGER-red?style=for-the-badge
 
 </div>
 
 ---
 
-[!WARNING]
+⚠️ LEGAL WARNING — READ BEFORE YOU TOUCH ANYTHING
 
-⚠️ AUTHORIZATION REQUIRED
+SILKFANG performs BOTH passive reconnaissance AND ACTIVE offensive probes.
 
-SILKFANG performs passive AND active reconnaissance. Active probes include HTTP method fuzzing, open-redirect injection, GraphQL introspection, path brute-forcing, cache poisoning, subdomain takeover checks, and DNS zone transfer attempts.
+Active probes include: HTTP method fuzzing, open-redirect injection, GraphQL introspection,
+path brute-forcing, cache-poisoning attempts, subdomain-takeover validation, and DNS zone-transfer attempts.
 
-Only use against systems you own or have explicit written authorization to test.
-Unauthorized use violates the Computer Fraud and Abuse Act (CFAA), the UK Computer Misuse Act, and equivalent laws in most jurisdictions.
+Only run this tool against systems you own, or systems for which you carry explicit written authorization from the asset owner.
 
-The author assumes NO liability for misuse.
+Unauthorized use may violate the Computer Fraud and Abuse Act (CFAA), the UK Computer Misuse Act, the EU NIS2 directive, GDPR Article 32, or any comparable local statute. The author (SYLHETYHACKVENGER / THE-ERROR808) assumes no liability for how this software is used.
 
----
-
-📑 Table of Contents
-
-1. What is SILKFANG?
-2. Feature Matrix
-3. Quick Start
-4. Installation
-5. Usage
-6. Command Line Reference
-7. Scan Profiles
-8. Detection Catalog
-9. Architecture Deep-Dive
-10. Output Formats
-11. Advanced Workflows
-12. Anti-Detection & Stealth
-13. Scope Control
-14. Checkpointing & Resume
-15. CI/CD Integration
-16. Real-World Case Studies
-17. Troubleshooting
-18. Performance Tuning
-19. Legal & Ethics
-20. Contributing
-21. Credits
+If you cannot produce a signed scope-of-work, do not run this tool.
 
 ---
 
-🎯 What is SILKFANG?
+Table of Contents
 
-SILKFANG is a single-file, dependency-light, live-streaming reconnaissance engine written in Python. It combines the passive attack-surface mapping capabilities of tools like aquatone, subfinder, and gau with the active verification capabilities of nuclei, dalfox, and sqlmap — all while streaming results to your terminal in real time.
+1. What SILKFANG Is
+2. The Philosophy
+3. Feature Matrix — The Complete Breakdown
+4. Architecture Diagram
+5. Quick Start
+6. Installation
+7. The Three Scan Profiles
+8. Command-Line Reference
+9. Live Streaming Output Engine
+10. Offensive Capabilities
+11. Defensive Audit Capabilities
+12. Technology Fingerprinting
+13. JavaScript Deep Mining
+14. Secret Detection Engine
+15. Asset Intelligence — The Deep Analyzer
+16. Subdomain Intelligence & Takeover Hunting
+17. DNS Deep Dive
+18. TLS Fingerprinting
+19. WAF & Bot-Challenge Detection
+20. Anti-Detection & Stealth Layer
+21. Resume & Checkpoint System
+22. Output Formats
+23. SARIF Integration for CI/CD
+24. Baseline Diffing
+25. Scope Control
+26. Operational Playbooks
+27. Signature Library Reference
+28. Sensitive Path Dictionary
+29. Developer Reference
+30. Performance & Tuning
+31. Troubleshooting
+32. FAQ
+33. Roadmap
+34. Credits & Contact
+35. Final Word
 
-Unlike traditional recon scanners that silently grind through a wordlist and dump a report at the end, SILKFANG streams every finding as it happens, color-coded by severity, with full JSON-lines output for pipeline integration.
+---
+
+What SILKFANG Is
+
+SILKFANG is an asynchronous, live-streaming website reconnaissance engine written in Python. It is not a scanner in the traditional sense — it does not "find vulnerabilities" via a static rulebook. Instead, it behaves like a patient, methodical operator:
+
+· It crawls a target and every asset it can reach.
+· It mines JavaScript, JSON, CSS, HTML comments, JSON-LD blobs, meta tags, and inline scripts for secrets, endpoints, and structural clues.
+· It fingerprints the entire technology stack — WAF, CDN, framework, language, server, auth provider, analytics, payment provider, cloud bucket, and more.
+· It audits the security posture — headers, TLS, cookies, CORS, CSP, HSTS, robots, sitemap, security.txt.
+· It probes for classes of bugs that are commonly missed by static checkers — open redirects, GraphQL introspection, cache poisoning, HTTP method overrides, subdomain takeovers.
+· It streams every finding to your terminal the instant it is discovered.
+
+The design goal is operator empathy: give a human researcher a fast, honest, uncluttered view of a target's attack surface, without drowning them in false positives or fabricated CVEs.
+
+---
 
 The Philosophy
 
-"A pentester's most valuable asset is not a payload — it is context. SILKFANG finds context: what's in scope, what's exposed, what's leaking, what's forgotten, what's dangerous."
+Traditional vulnerability scanners are loud, slow, and frequently wrong. They fire every payload in the book and hope the target complains in a way that matches a regex. SILKFANG takes the opposite approach.
 
-SILKFANG is built on four principles:
+1. Evidence over inference.
+If SILKFANG emits WEAK-JWT-SECRET, it means a wordlist candidate literally produced a valid HMAC signature. If it emits SUBDOMAIN-TAKEOVER, a CNAME literally resolves to a known provider and the HTTP body literally contains that provider's "not found" fingerprint. No speculation.
 
-Principle Implementation
-Stream everything Results appear the moment they're discovered. No waiting 10 minutes for a batch report.
-Respect the target Built-in per-host backoff, jitter, UA rotation, and polite rate limiting.
-Never lose work Automatic JSONL checkpointing every 30 seconds. Ctrl-C = safe abort with flushed results.
-Zero lock-in Single .py file. Pure stdlib + optional acceleration. Runs anywhere Python runs.
+2. Context is everything.
+A CREDIT-CARD hit is only emitted after a Luhn check. An INTERNAL-IP is only reported for private ranges. OPEN-S3, OPEN-AZURE, and OPEN-GCS findings include the concrete bucket name and a GET response. Nothing is reported "because a regex matched a comment."
 
-What SILKFANG is NOT
+3. Speed with manners.
+Every request goes through a per-host scheduler that enforces jittered spacing, exponential backoff on failure, and hard caps on total pages. SILKFANG will never hammer a target into a 503.
 
-· ❌ Not an exploit framework — it identifies surface area, doesn't weaponize
-· ❌ Not a fuzzer — path discovery is a small, rate-limited part of the picture
-· ❌ Not a scraper — it maps, it doesn't archive
-· ❌ Not a replacement for manual review — it feeds your manual review
+4. Findings are streams, not files.
+Every emit is timestamped, deduplicated, and severity-coloured. You watch the attack surface unfold in real time, not after the tool has already scrolled off-screen.
 
----
-
-🚀 Feature Matrix
-
-Offensive Reconnaissance
-
-Feature Status Description
-Subdomain Enumeration ✅ crt.sh CT log mining + CNAME analysis
-Subdomain Takeover Detection ✅ 16 provider fingerprints + CNAME pattern matching
-URL / Endpoint Extraction ✅ HTML, JS, CSS, JSON, sitemap, robots, meta-refresh
-JavaScript AST Analysis ✅ esprima-powered endpoint & literal discovery
-Secret Scanning ✅ 25+ secret patterns (AWS, GCP, Stripe, GitHub, Slack...)
-JWT Audit & Cracking ✅ alg=none, weak HS256 secret brute-force
-GraphQL Introspection ✅ 5 common endpoints, JSON + application/graphql
-Open Redirect Probing ✅ 6 common redirect parameters
-CORS Misconfiguration ✅ Wildcard, reflection, credentials-combined
-HTTP Method Risk ✅ TRACE, PUT, DELETE, PATCH via OPTIONS Allow
-Method Override Abuse ✅ X-HTTP-Method-Override probe
-Cache Poisoning ✅ 4 unkeyed-header reflections
-Cache Deception ✅ Static-suffix extension test
-Fat GET ✅ GET-with-body detection
-IDOR Candidate Mining ✅ Numeric sequencing & UUID clustering
-Path Brute-Force ✅ 60+ curated paths, rate-limited
-Sensitive File Detection ✅ 100+ paths with HIGH_RISK matrix
-DNS Zone Transfer ✅ AXFR attempt per NS record
-Reverse DNS & ASN ✅ PTR + RDAP lookup via ipwhois
-
-Defensive Audit
-
-Feature Status Description
-Security Header Audit ✅ 18 headers, HSTS, CSP, COOP/COEP/CORP
-CSP Weakness ✅ unsafe-inline, unsafe-eval, wildcard, report-uri
-HSTS Analysis ✅ max-age, preload, includeSubDomains
-Cookie Attribute Audit ✅ Secure/HttpOnly/SameSite, prefixes, JWT-in-cookie
-TLS/SSL Inspection ✅ Protocol, cipher, SANs, issuer, expiry
-CORS Preflight ✅ Live OPTIONS probe with evil.example.com origin
-WAF Fingerprinting ✅ 11 WAF vendors via headers & cookies
-Bot-Challenge Detection ✅ Cloudflare, DataDome, Akamai, PerimeterX, Kasada
-Email Authentication ✅ SPF, DMARC, BIMI
-robots.txt / sitemap.xml ✅ Parsing + URL discovery
-security.txt ✅ /.well-known/security.txt parsing
-humans.txt / ads.txt ✅ app-ads.txt, manifest.json, feeds
-
-Passive & Structural
-
-Feature Status Description
-Technology Fingerprinting ✅ 40+ frameworks & servers
-Analytics Detection ✅ GA-UA, GA4, GTM, FB-Pixel, Hotjar, Segment
-Error Tracking Detection ✅ Sentry, Rollbar, Datadog, New Relic, Honeybadger
-Chat Widget Detection ✅ Intercom, Drift, Crisp, Zendesk
-Payment Gateway Detection ✅ Stripe, PayPal, Square, Cloudinary
-Auth Provider Detection ✅ Auth0, Okta, Cognito, Clerk, Firebase Auth
-Cloud Detection ✅ Firebase, Supabase, Mapbox
-Real-Time Detection ✅ Pusher, PubNub, Algolia
-Feature Flag Detection ✅ LaunchDarkly, Optimizely
-SRI Hash Audit ✅ Missing integrity on external script/link
-Form Analysis ✅ CSRF missing, _blank without noopener, hidden fields
-Meta/OG/Microdata ✅ Social cards, schema.org extraction
-Comment Mining ✅ TODO/FIXME/secret-hint detection in HTML comments
-Email & Phone Harvesting ✅ Regex, filtered for false positives
-Crypto Addresses ✅ BTC, ETH, XMR
-Deep Asset Analysis ✅ Image EXIF/GPS, PDF meta, Office meta, archives
-Font Metadata ✅ fontTools-powered name table extraction
-SVG Script Detection ✅ Embedded <script> & external refs
-
-Operational
-
-Feature Status Description
-Live Streaming ✅ Every finding in real time, colored & severity-ranked
-JSON-Lines Output ✅ --jsonl for pipeline consumers
-SARIF Export ✅ GitHub Code Scanning compatible
-Baseline Diffing ✅ --baseline to diff runs
-Checkpoint & Resume ✅ --resume, --reset
-Multi-Target List ✅ -l targets.txt
-Proxy Support ✅ --proxy http://...
-Auth Injection ✅ --cookie, --bearer
-Scope Control ✅ --field-scope rdn\|fqdn\|dn, --crawl-scope regex
-Per-Host Backoff ✅ Exponential, capped at 300s
-UA Rotation ✅ 25+ curated real-world UAs
-Chrome Impersonation ✅ via curl_cffi when available
-Self-Test Mode ✅ --self-test smoke test
-Interactive Menu ✅ Fancy Rich-based CLI
+5. Everything is resumable.
+If you Ctrl-C, a checkpoint is saved. --resume continues from exactly where you stopped — visited URLs, discovered assets, and prior findings all restored.
 
 ---
 
-⚡ Quick Start
+Feature Matrix — The Complete Breakdown
 
-```bash
-# Clone
-git clone https://github.com/sylhetyhackvenger/Silkfang 
-cd Silkfang 
+Domain Capability Category
+HTTP Full crawl with custom User-Agent rotation Core
+HTTP Per-host jittered rate limiting + exponential backoff Core
+HTTP Redirect chain capture and analysis Core
+HTTP Retry with staggered delay on 429/503 Core
+HTTP Bot challenge detection (Cloudflare, DataDome, Akamai, Kasada, PerimeterX) Active
+HTML Full link extraction from <a>, <form>, <link>, <script>, <iframe>, <img>, <video>, <audio>, <source>, <track>, <embed>, <object>, <use>, <image>, <base> Core
+HTML data-* attribute mining (data-href, data-url, data-endpoint, …) Core
+HTML JSON-LD schema.org extraction Core
+HTML Microdata (itemprop) extraction Core
+HTML OpenGraph and Twitter card extraction Core
+HTML Generator meta, viewport, canonical, hreflang, pagination rels Core
+HTML Meta refresh target discovery Core
+HTML HTML comment mining for TODO, FIXME, password, secret, admin, api_key, xss, sqli, bypass, auth, credential, aws, gcp, azure, salt, hash, jwt, oauth, pem, keystore, htpasswd, shadow, sudo, root Passive
+HTML Inline <script> and <style> harvesting Core
+HTML Deep-link protocol extraction (whatsapp://, intent://, tg://, viber://, …) Passive
+HTML Form method/action/enctype/CSRF audit Defensive
+HTML Hidden input extraction Passive
+HTML SVG embedded-script detection Passive
+HTML <noscript> fallback extraction Core
+CSS url() and @import extraction Core
+CSS Font-file discovery Core
+CSS CSS source-map detection Active
+JS Full ESprima AST parse (falls back to regex on parse failure) Active
+JS Template literal endpoint extraction Active
+JS Dynamic import / require resolution Active
+JS Source map discovery + fetch hint Active
+JS WebSocket URL extraction Active
+JS postMessage origin-check audit Active
+JS Wildcard postMessage target audit Active
+JS DOM-XSS source/sink correlation Active
+JS Prototype-pollution detection in __proto__-merge patterns Active
+JS Sensitive localStorage/sessionStorage key detection Active
+JS fetch/axios endpoint extraction Active
+JS JWT audit (alg=none, jku, jwk, kid injection, missing exp) Active
+JS HS256 JWT offline cracking against wordlist Active
+JSON Recursive key mining for token, api_key, secret, password, private_key, aws_access_key_id, client_secret, … Active
+JSON Nested endpoint URL extraction Active
+Secrets 40+ signature classes (AWS, GCP, Stripe, Slack, GitHub, GitLab, Twilio, SendGrid, Mailgun, HuggingFace, OpenAI, Anthropic, Cohere, Groq, Perplexity, Replicate, Cloudinary, DigitalOcean, Alibaba, Discord, Telegram, Clerk, Supabase, Vercel, Netlify, Fly, Railway, Render, Datadog, PagerDuty, Opsgenie, Linear, Notion, Airtable, Figma, Shopify, AssemblyAI, ElevenLabs, Deepgram, Mistral, XAI, OpenRouter, …) Active
+Secrets Shannon-entropy high-entropy-string detection Active
+Secrets Luhn-validated credit card detection Active
+Secrets IBAN detection with length validation Active
+Secrets SSN detection Active
+Secrets Private key / certificate PEM detection Active
+Cloud S3 bucket URL discovery Passive
+Cloud Azure Blob URL discovery Passive
+Cloud Google Cloud Storage bucket discovery Passive
+Cloud Firebase Storage / Realtime-DB discovery Passive
+Cloud Firebase apiKey+projectId correlation Passive
+Cloud Supabase instance + key detection Passive
+Cloud Cloudinary URL credential extraction Passive
+Auth Auth0 tenant + client_id correlation Passive
+Auth Okta tenant detection Passive
+Auth AWS Cognito pool detection Passive
+Auth Clerk instance detection Passive
+Auth OAuth client_id extraction Passive
+Auth Password reset token extraction Passive
+Auth CSRF token field detection Passive
+Payments Stripe publishable key extraction Passive
+Payments Stripe secret key detection Active
+Payments PayPal business email Passive
+Payments Square application ID Passive
+Payments Braintree tokenization key Passive
+Payments Adyen client key Passive
+Analytics GA-UA, GA4, GTM, FB Pixel, Hotjar, Segment, Amplitude, Mixpanel, PostHog, Plausible, Matomo, Umami, Clarity, Heap, RudderStack, mParticle, Tealium Passive
+Analytics Segment write key detection Active
+Error Tracking Sentry, Datadog RUM, New Relic, Rollbar, Honeybadger, Bugsnag, Raygun, LogRocket, FullStory Passive
+Chat Intercom, Drift, Crisp, Zendesk Passive
+Maps Mapbox (pk/sk), Google Maps, Here Passive
+Realtime Pusher, PubNub, Ably Passive
+Search Algolia appId+apiKey, Typesense, MeiliSearch Passive
+Feature Flags LaunchDarkly client-side ID, Optimizely project ID Passive
+Consent OneTrust, Cookiebot Passive
+CAPTCHA reCAPTCHA, hCaptcha, Cloudflare Turnstile site keys Passive
+Crypto BTC, ETH, XMR, LTC, DOGE, SOL address extraction Passive
+Hashes MD5, SHA1, SHA256, UUID, JWT discovery Passive
+Base64 Recursive base64 payload unwrapping Passive
+Contact Email, phone, mailto:, tel:, sms: extraction Passive
+Library 35+ JS library version extraction (jQuery, Bootstrap, React, Vue, Angular, Svelte, D3, Chart.js, GSAP, Lodash, Moment, Day.js, Three.js, Alpine, HTMX, Axios, Socket.io, Handlebars, Mustache, RequireJS, Modernizr, Popper, Ember, Backbone, Knockout, Underscore, Foundation, Bulma, Tailwind, jQuery-UI, jQuery-Mobile, Vuex, React-DOM, Redux) Passive
+SRI Missing integrity= on external scripts/styles Passive
+Headers 30+ security header audit (HSTS, CSP, XFO, XCTO, Referrer, Permissions-Policy, COOP, COEP, CORP, X-XSS, …) Defensive
+Headers HSTS max-age weakness, preload, includeSubDomains Defensive
+Headers CSP unsafe-inline, unsafe-eval, wildcard, report-uri extraction Defensive
+Headers Server version leakage (Server, X-Powered-By, X-AspNet-Version, X-Generator, X-Git-Commit, X-Env, X-Pod, X-Namespace, …) Passive
+Headers Trace headers (X-Request-ID, X-Correlation-ID, W3C Traceparent, B3) Passive
+Headers Edge/CDN headers (CF-Ray, X-Cache, X-Served-By, X-Varnish, X-Akamai) Passive
+CORS Wildcard ACAO detection Defensive
+CORS Credentials + wildcard detection Active
+CORS Origin reflection probe with evil.example.com Active
+CORS Null-origin acceptance probe Active
+CORS Preflight method/header disclosure Defensive
+Cookies Secure, HttpOnly, SameSite, domain, path, __Host-/__Secure- prefix audit Defensive
+Cookies JWT-in-cookie audit Active
+Cookies Base64 JSON payload detection Active
+TLS Protocol version, cipher suite, issuer, subject, expiry, SANs Passive
+WAF 25+ WAF product fingerprints (Cloudflare, Akamai, Incapsula, Sucuri, CloudFront, AWS WAF, Fastly, F5 BIG-IP, Barracuda, ModSecurity, Imperva, DDoS-Guard, FortiWeb, Citrix NetScaler, Radware, Wallarm, Signal Sciences, Rapid7, StackPath, KeyCDN, BunnyCDN, Gcore, Qrator, Vercel, Netlify, Deno Deploy, Cloudflare Workers, Fastly Compute) Active
+DNS A, AAAA, NS, MX, TXT, SRV, CAA, DNSKEY, SOA, PTR, TLSA, SSHFP, NAPTR Passive
+DNS DMARC, SPF, DKIM (default/google/selector1/selector2/k1) Passive
+DNS MTA-STS, SMTP TLS, BIMI Passive
+DNS ACME challenge TXT, DNSLink, GitHub Pages challenge Passive
+DNS AXFR zone-transfer attempt Active
+DNS Reverse PTR, RDAP ASN + organization Passive
+Subdomains crt.sh certificate transparency aggregation Passive
+Subdomains HackerTarget host-search API Passive
+Subdomains RapidDNS aggregation Passive
+Subdomains AlienVault OTX passive DNS Passive
+Subdomains CNAME-resolved takeover fingerprinting (60+ providers) Active
+Subdomains Dangling CNAME detection Active
+Probes OPTIONS method discovery + TRACE XST Active
+Probes Risky method enumeration (PUT, DELETE, PATCH, PROPFIND, …) Active
+Probes Open-redirect injection across 20+ common parameters Active
+Probes Cache-poisoning via X-Forwarded-* / X-Original-URL / Forwarded Active
+Probes Web cache deception via appended static extensions Active
+Probes HTTP method override via X-HTTP-Method-Override Active
+Probes FAT-GET (GET-with-body) behavior detection Active
+Probes GraphQL introspection across 12 common endpoint paths Active
+Probes Path brute-force across 200+ common paths Active
+Probes Sensitive path enumeration (.env, .git, wp-config, Dockerfile, package.json, actuator/*, phpinfo, backups, …) Active
+Discovery robots.txt parsing + Allow/Disallow + Sitemap Passive
+Discovery Sitemap recursion (up to 100k URLs) Passive
+Discovery security.txt parsing Passive
+Discovery humans.txt, ads.txt, app-ads.txt Passive
+Discovery PWA manifest discovery Passive
+Discovery RSS, Atom, feed discovery Passive
+Discovery Changelog, README, LICENSE, SECURITY.md discovery Passive
+Discovery Favicon hash (Shodan-compatible MD5) Passive
+Discovery Pagination detection (page, p, offset, cursor, after, before, …) Core
+Assets EXIF GPS + Make/Model/Software/SerialNumber extraction Active
+Assets PDF metadata (Author, Creator, Producer, Title, Subject, Keywords, CreationDate, ModDate, Trapped) + page count Active
+Assets Office (docx/xlsx/pptx/odt/ods/odp/epub) core.xml metadata Active
+Assets ZIP/TAR archive entry listing Active
+Assets SVG embedded-script / xlink-href extraction Active
+Assets Font metadata (name table IDs 1–20) Active
+Analysis IDOR candidate detection from numeric/UUID param sequences Passive
+Analysis Parameter wordlist building Core
+Analysis Internal ID attribute extraction Passive
+Analysis Internal IP address detection (RFC1918) Passive
+Analysis Dev-banner detection (lorem ipsum, coming soon, staging, beta) Passive
+Analysis GraphQL endpoint URL extraction Passive
+Reporting Live coloured streaming to terminal Core
+Reporting JSONL streaming for SIEM ingestion Core
+Reporting Deduplication of every emit Core
+Reporting Severity classification (critical/high/medium/low/info) Core
+Reporting Per-run text file output Core
+Reporting SARIF 2.1.0 export Core
+Reporting Baseline diffing Core
+Reporting Resume checkpoints (JSONL) Core
+Stealth 60+ User-Agent rotation Core
+Stealth Accept-header variant rotation Core
+Stealth Accept-Language rotation Core
+Stealth Sec-CH-UA variant rotation Core
+Stealth Referer construction Core
+Stealth curl_cffi TLS impersonation (Chrome 120) Core
+Stealth Per-host exponential backoff Core
+Stealth Per-host jittered spacing Core
+Stealth Graceful SIGINT/SIGTERM shutdown Core
 
-# Install dependencies
-pip install beautifulsoup4 lxml tldextract rich curl_cffi
+---
 
-# (optional, unlocks more)
-pip install dnspython esprima Pillow pypdf fonttools ipwhois uvloop
+Architecture Diagram
 
-# Fire it
-python3 silkfang.py
+```
+                    ┌────────────────────────────────┐
+                    │      CLI / Interactive Menu     │
+                    │   (-m, --jsonl, -fs, --resume)  │
+                    └───────────────┬────────────────┘
+                                    │
+                    ┌───────────────▼────────────────┐
+                    │          Crawler Core           │
+                    │  queue · workers · scope · cap  │
+                    └──┬──────────┬──────────┬────────┘
+                       │          │          │
+        ┌──────────────▼──┐  ┌────▼─────┐  ┌─▼──────────────┐
+        │   Stealth Layer │  │ Fetcher  │  │   LiveStream    │
+        │   UA / Sec-CH   │  │ curl_cffi│  │   dedup + emit  │
+        │   jitter/backoff│  │  or httpx│  │   severity/color│
+        └─────────────────┘  └────┬─────┘  └────────┬────────┘
+                                  │                 │
+                       ┌──────────▼─────────────────▼────────┐
+                       │           Handler Pipeline          │
+                       │  ┌────────────┐  ┌──────────────┐   │
+                       │  │  HTML      │  │  JS (ESprima) │   │
+                       │  │  extractor │  │  AST + regex  │   │
+                       │  └────────────┘  └──────────────┘   │
+                       │  ┌────────────┐  ┌──────────────┐   │
+                       │  │  JSON      │  │  CSS parser   │   │
+                       │  └────────────┘  └──────────────┘   │
+                       │  ┌────────────┐  ┌──────────────┐   │
+                       │  │  Secrets   │  │  Headers      │   │
+                       │  │  Entropy   │  │  Cookies/CORS │   │
+                       │  └────────────┘  └──────────────┘   │
+                       │  ┌────────────┐  ┌──────────────┐   │
+                       │  │  Asset     │  │  WAF / bot    │   │
+                       │  │  EXIF/PDF  │  │  fingerprint  │   │
+                       │  └────────────┘  └──────────────┘   │
+                       └────────────┬────────────────────────┘
+                                    │
+                       ┌────────────▼────────────────────────┐
+                       │       Active Probe Bundle           │
+                       │  subdomain → CNAME takeover         │
+                       │  paths · graphql · cache · redirect │
+                       │  methods · fat-get · IDOR correlate │
+                       └────────────┬────────────────────────┘
+                                    │
+                       ┌────────────▼────────────────────────┐
+                       │       Reporting & Persistence        │
+                       │  .txt · .jsonl · .sarif · .visited   │
+                       │  checkpoint resume · baseline diff   │
+                       └─────────────────────────────────────┘
 ```
 
+---
+
+Quick Start
+
 ```bash
-# Fast, focused offensive scan
-python3 silkfang.py https://target.com -m 500 --fast
+# 1. Clone
+git clone https://github.com/Sylhetyhackvenger/Silkfang 
+cd Silkfang
 
-# Full audit, all modes, unlimited pages
-python3 silkfang.py https://target.com --unlimited
+# 2. Install
+pip install -r requirements.txt
 
-# Silent JSON-lines for pipelines
-python3 silkfang.py https://target.com --jsonl -q --silent > findings.jsonl
+# 3. (run the tool)
+python silkfang.py 
+
+# Full crawl, unlimited pages, JSONL output
+python silkfang.py https://target.example --unlimited --jsonl -y
+
+# Offensive profile only, resume if previously interrupted
+python silkfang.py https://target.example -m 200 --resume -y
 ```
 
 ---
 
-📦 Installation
+Installation
 
 Requirements
 
-· Python 3.9+ (3.10+ recommended for asyncio.to_thread)
-· Linux / macOS / WSL2 for full feature set
-· Windows 10/11 works but uvloop and signal behave differently
+· Python 3.9+
+· curl-cffi or httpx for HTTP fetching (curl-cffi highly recommended — it impersonates Chrome TLS)
+· beautifulsoup4 + lxml for HTML parsing
+· tldextract for registered-domain detection
+· rich for terminal UI
 
-Minimal Install
+Optional (each unlocks additional capability)
 
-The only hard dependencies are:
+Package Unlocks
+uvloop 2–4× faster asyncio event loop on Linux/macOS
+esprima Full JS AST parsing instead of regex fallback
+dnspython All DNS types, DMARC/SPF/DKIM, AXFR
+Pillow EXIF GPS + camera metadata extraction
+pypdf Precise PDF metadata parsing
+fonttools TrueType/OpenType name-table extraction
+ipwhois RDAP ASN + organization lookups
+
+One-liner install
 
 ```bash
-pip install beautifulsoup4 lxml tldextract rich
+pip install curl-cffi httpx beautifulsoup4 lxml tldextract rich uvloop esprima dnspython Pillow pypdf fonttools ipwhois
 ```
 
-Without these, SILKFANG exits with a clear FATAL error on startup.
-
-Recommended Install
+From requirements.txt
 
 ```bash
-pip install beautifulsoup4 lxml tldextract rich \
-            curl_cffi httpx \
-            dnspython esprima \
-            Pillow pypdf fonttools \
-            ipwhois uvloop
-```
-
-Package Purpose Unlocks
-curl_cffi TLS/JA3 impersonation Chrome 120 fingerprint impersonation
-httpx Fallback HTTP client HTTP/2, if curl_cffi unavailable
-dnspython DNS queries Full DNS record dump, zone transfer, DMARC/SPF
-esprima JS parsing AST-level endpoint discovery
-Pillow Image processing EXIF/GPS extraction
-pypdf PDF parsing PDF metadata
-fonttools Font parsing name table extraction
-ipwhois ASN lookup RDAP-enriched ASN/org info
-uvloop Event loop 2-3× throughput on asyncio-heavy runs
-
-Virtual Environment (recommended)
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Docker
-
-```dockerfile
-FROM python:3.11-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libssl-dev libffi-dev && \
-    rm -rf /var/lib/apt/lists/*
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY silkfang.py .
-ENTRYPOINT ["python", "silkfang.py"]
-```
+Verify
 
 ```bash
-docker build -t silkfang .
-docker run --rm -it silkfang https://target.com -m 200
+python silkfang.py --self-test
+# → {"ok": true, "findings": <n>}
 ```
-
-Verifying the Install
-
-```bash
-python3 silkfang.py --self-test
-# {"ok": true, "findings": 42}
-```
-
-If ok: true, you're ready.
 
 ---
 
-📖 Usage
+The Three Scan Profiles
 
-Interactive Mode
+SILKFANG exposes three deliberate profiles. Choose the one that matches your intent.
 
-Run with no target to enter the guided menu:
+1 — OFFENSIVE
 
-```bash
-python3 silkfang.py
-```
+Focused on attack surface discovery. Runs:
 
-You'll see a legal warning, authorization prompt, then a menu:
+· Full crawl with all extraction pipelines
+· Technology fingerprinting (framework, server, WAF, CDN)
+· JavaScript AST mining for endpoints and secrets
+· Secret detection across the whole signature library
+· Subdomain aggregation from 4 public sources
+· Subdomain takeover validation (CNAME + HTTP fingerprint)
+· Sensitive path enumeration (.env, .git, wp-config, Dockerfile, package.json, backups, actuator endpoints, …)
+· Path brute-force (200+ common paths)
+· GraphQL introspection across 12 common endpoints
+· HTTP method discovery + risky-method reporting (PUT, DELETE, PATCH, TRACE, PROPFIND, …)
+· Open-redirect injection across 20+ common parameters
+· Cache poisoning via X-Forwarded-*, X-Original-URL, Forwarded
+· Cache deception via appended static extensions
+· HTTP method override probes
+· FAT-GET behavior detection
+· Favicon hash (Shodan-compatible)
+· DNS zone transfer attempt (AXFR)
 
-```
-╭──────────────────── SELECT SCAN PROFILE ────────────────────╮
-│ [1] OFFENSIVE   //  attack surface · DNS · subdomains · ... │
-│ [2] DEFENSIVE   //  headers · TLS · cookies · CORS · ...    │
-│ [3] ALL + FULL  //  everything + full-site crawl            │
-│ [q] QUIT                                                    │
-╰─────────────────────────────────────────────────────────────╯
-```
+Use this when you are performing authorized attack-surface mapping, bug-bounty reconnaissance, or red-team staging.
 
-Non-Interactive Mode
+2 — DEFENSIVE
 
-Provide a target and it runs straight through:
+Focused on configuration hardening. Runs:
 
-```bash
-python3 silkfang.py https://example.com -y
-```
+· Full crawl with all extraction pipelines
+· Security header audit (30+ headers)
+· HSTS max-age / preload / includeSubDomains validation
+· CSP unsafe-inline / unsafe-eval / wildcard detection
+· Cookie flag audit (Secure, HttpOnly, SameSite, __Host-/__Secure- prefix)
+· CORS policy audit (wildcard, credentials, null origin)
+· Form method/action audit, CSRF-token presence
+· TLS certificate and cipher inspection
+· robots.txt + sitemap + security.txt parsing
+· humans.txt, ads.txt, app-ads.txt, PWA manifest, feeds
+· Server-version leakage
+· Trace-header leakage (X-Request-ID, X-Correlation-ID, Traceparent, B3)
+· WAF fingerprinting (informational)
 
-Scan Profiles
+Use this when you are auditing your own infrastructure, preparing for a SOC2 / ISO 27001 audit, or reviewing a client's hardening posture.
 
-Profile Flag What runs
-Offensive -m 1 or default --target Attack surface mapping, subdomains, secrets, active probes
-Defensive -m 2 Headers, TLS, cookies, CORS, robots.txt, sitemap
-All -m 3 Both, plus full-site crawl & pagination discovery
+3 — ALL + FULL
 
-Sample Output
+Runs both profiles, plus:
 
-```
-15:42:01  CRIT  SECRET                →  AKIAIOSFODNN7EXAMPLE
-15:42:01  HIGH  SENSITIVE-200         https://api.target.com/.env  →  len=2048 snip=DB_HOST=...
-15:42:02  HIGH  CORS                  https://api.target.com/  →  reflects https://evil.com
-15:42:02  HIGH  GRAPHQL               https://api.target.com/graphql  →  introspection enabled
-15:42:03  MED   HDR-                  HSTS  →  MISSING
-15:42:03  MED   COOKIE                sessionid  →  flags=Secure|HttpOnly|SameSite domain=.target.com path=/ prefix=-
-15:42:04  INFO  TECH-ID               https://target.com  →  Next.js
-15:42:04  INFO  SUBDOMAIN             api.target.com  →  crt.sh
-15:42:05  LOW   COMMENT               https://target.com  →  TODO: remove before prod - admin/key
-```
+· Full-site crawl with pagination discovery
+· Deep asset analysis (EXIF, PDF, Office, ZIP, SVG, fonts)
+· IDOR parameter-sequence correlation across every discovered URL
+· Resume checkpoints every 30 seconds
 
-Real-Time Dashboard
-
-While running, SILKFANG updates a live HUD every 2 seconds:
-
-```
-RUNNING   https://target.com      pages 47/100  assets 12  find 156  t 34s  r 1.4/s
-⏸ backoff api.target.com:120s
-```
-
-Interrupt with Ctrl-C at any time — the crawler flushes state and writes the final report.
+Use this when you want the complete picture in a single pass.
 
 ---
 
-⌨️ Command Line Reference
+Command-Line Reference
 
 ```
-usage: silkfang.py [-h] [-l LIST] [-m MAX_PAGES] [--unlimited] [-w WORKERS]
-                   [-r RATE] [-t TIMEOUT] [--passive] [--no-subdomains]
-                   [--deep-assets] [--resume] [--reset] [-o OUTPUT] [-y]
-                   [--min-delay MIN_DELAY] [--max-delay MAX_DELAY] [--fast]
-                   [-fs {rdn,fqdn,dn}] [-cs CRAWL_SCOPE] [-j] [--silent]
-                   [-silent] [-q] [-nc] [--sarif] [--baseline BASELINE]
-                   [--cookie COOKIE] [--bearer BEARER]
-                   [--jwt-wordlist JWT_WORDLIST] [--proxy PROXY]
-                   [--self-test] [target]
+usage: silkfang.py [-h] [target] [-l LIST] [-m MAX_PAGES] [--unlimited]
+                   [-w WORKERS] [-r RATE] [-t TIMEOUT] [--passive]
+                   [--no-subdomains] [--deep-assets] [--resume] [--reset]
+                   [-o OUTPUT] [-y] [--min-delay MIN_DELAY]
+                   [--max-delay MAX_DELAY] [--fast] [-fs {rdn,fqdn,dn}]
+                   [-cs CRAWL_SCOPE] [-j] [--silent] [-q] [-nc] [--sarif]
+                   [--baseline BASELINE] [--cookie COOKIE] [--bearer BEARER]
+                   [--jwt-wordlist JWT_WORDLIST] [--proxy PROXY] [--self-test]
 ```
 
-Target Selection
+Target selection
 
-Flag Argument Description
-target URL Single target. Auto-prepends https:// if scheme missing.
--l, --list File Newline-separated list of targets.
---self-test — Smoke test against example.com (passive only). Exits 0/1.
+Flag Description
+target Single target URL (positional). Prefix https:// added automatically if missing.
+-l, --list FILE Read multiple targets from a file, one URL per line.
+--self-test Run the internal self-test suite and exit.
 
-Crawl Control
+Crawl scope
 
 Flag Default Description
--m, --max-pages 100 Hard cap on pages fetched.
---unlimited off Disable page cap. Respect the target.
--w, --workers 10 Concurrent workers.
--r, --rate 0 Max requests/sec per host. 0 = unlimited.
--t, --timeout 15.0 Per-request timeout (seconds).
---passive off No active probes. Only passive recon.
---no-subdomains off Skip subdomain enumeration.
---deep-assets off Download & analyze binary assets (images, PDFs, archives).
+-m, --max-pages N 100 Hard cap on total URLs crawled per run.
+--unlimited off Disable the page cap entirely.
+-w, --workers N 10 Concurrent fetch workers.
+-r, --rate N 0 Global requests/second cap (0 = unlimited).
+-t, --timeout N 15.0 Per-request timeout (seconds).
+--passive off Skip all active probes; passive crawl only.
+--no-subdomains off Disable subdomain enumeration and enqueueing.
+--deep-assets off Download and analyze binary assets (images, PDFs, Office docs, archives, fonts, SVG).
+--resume off Resume the previous run from its checkpoint.
+--reset off Delete the checkpoint before starting.
 
-Stealth
+Scope control
 
 Flag Default Description
---min-delay 0.5 Min inter-request delay (seconds).
---max-delay 2.5 Max inter-request delay (seconds).
---fast off Disable all delays. Very noisy.
+-fs, --field-scope {rdn,fqdn,dn} rdn rdn = registered domain + all subdomains; fqdn = exact hostname only; dn = hostname and any subdomain of the given hostname.
+-cs, --crawl-scope REGEX — Only crawl URLs whose full URL matches this regex.
 
-Scope Control
+Stealth & pacing
 
-Flag Values Description
--fs, --field-scope rdn / fqdn / dn rdn = registered domain (all subdomains), fqdn = exact host only, dn = domain-name match (host == scope or host.endswith("." + scope)).
--cs, --crawl-scope regex Only crawl URLs matching this regex.
+Flag Default Description
+--min-delay S 0.5 Minimum jitter delay between requests (seconds).
+--max-delay S 2.5 Maximum jitter delay between requests (seconds).
+--fast off Set min/max delay to zero. Rude. Use only against your own property.
 
-Output
-
-Flag Description
--o, --output Output directory. Default: output/.
--j, --jsonl Emit each finding as a JSON line on stdout.
---silent Suppress all non-JSON output.
--q, --quiet Suppress FETCHED, INFO, TECH-ID, EXTERNAL-DOMAIN, etc.
--nc, --no-color Disable ANSI colors.
---sarif Emit SARIF file alongside text report.
---baseline Path to prior report; only show new findings.
-
-Auth & Proxy
+Authentication
 
 Flag Description
---cookie Raw Cookie: header string (e.g., session=abc123; csrftoken=xyz).
---bearer Bearer token (adds Authorization: Bearer <token>).
---jwt-wordlist Wordlist for HS256 JWT secret brute-force (first 10,000 entries).
---proxy HTTP/SOCKS proxy URL.
+--cookie "name=value; name2=value2" Send this cookie header on every request.
+--bearer TOKEN Send Authorization: Bearer TOKEN on every request.
+--jwt-wordlist PATH Wordlist to attempt HS256 JWT cracking.
 
-Checkpointing
+Networking
 
 Flag Description
---resume Resume from prior checkpoint.
---reset Clear prior checkpoint before run.
+--proxy URL Route all traffic through http:// or socks5:// proxy.
+--sarif Also write a .sarif file alongside the .txt output.
+--baseline PATH Diff current findings against a previously-generated .txt.
+
+Output control
+
+Flag Description
+-j, --jsonl Emit findings as JSONL to stdout. No menu, no colour.
+--silent Same as --jsonl but no human-readable output either.
+-q, --quiet Suppress low-signal types (FETCHED, IMG, TECH-ID, EXTERNAL-DOMAIN, PRELOAD, META, OG, MICRODATA, ICON, HEARTBEAT, HUD, INFO).
+-nc, --no-color Disable ANSI colour in the terminal.
+-o, --output DIR Output directory (default output).
+-y, --yes Skip the authorization confirmation prompt.
+
+Interactive vs non-interactive
+
+· No --silent / --jsonl → interactive menu.
+· With --silent or --jsonl → non-interactive; runs the ALL profile and exits.
 
 ---
 
-🔬 Detection Catalog
+Live Streaming Output Engine
 
-SILKFANG has 150+ individual detectors organized into 15 categories.
+Every discovery flows through LiveStream.emit(typ, key, val). The engine:
 
-🔐 Secrets (SEVERITY: critical)
+1. Deduplicates — the triple (typ, key, val) is added to a per-run set. Duplicate emits are silently dropped. This means you can watch the same IMG line only once, no matter how many pages reference it.
+2. Classifies — maps typ to critical, high, medium, low, or info via the SEVERITY prefix table.
+3. Colours — critical → bright red, high → red, medium → yellow, low → cyan, info → white.
+4. Streams — prints a single line per emit:
+   ```
+   12:34:56  CRIT SECRET                → AWS-KEY AKIAIOSFODNN7EXAMPLE
+   12:34:57  HIGH DOM-XSS               → location.hash → innerHTML
+   12:34:57  MED  HDR-                  → CSP MISSING
+   12:34:58  INFO TECH-ID               → WordPress
+   ```
+5. Tallies — maintains running counts per severity and per type, exposed for the final summary.
 
-Structured secret patterns scanned in JS, HTML, JSON, and CSS:
+Quiet mode
 
-Pattern Label Severity
-AKIA[0-9A-Z]{16} AWS-KEY critical
-ASIA[0-9A-Z]{16} AWS-STS critical
-sk_live_* STRIPE-LIVE critical
-sk_test_* STRIPE-TEST high
-pk_live_* STRIPE-PK medium
-AIza[0-9A-Za-z_-]{35} GOOGLE-API high
-xox[baprs]-* SLACK-TOKEN critical
-ghp_* / gho_* / github_pat_* GITHUB-* critical
-glpat-* GITLAB-PAT critical
------BEGIN * PRIVATE KEY----- PRIVATE-KEY critical
-SG.*.* SENDGRID critical
-dop_v1_* DIGITALOCEAN critical
-LTAI* ALIBABA critical
-cloudinary://* CLOUDINARY critical
-SK[0-9a-f]{32} TWILIO critical
-hf_* HUGGINGFACE critical
-sk-ant-* ANTHROPIC critical
-sk-* (48 chars) OPENAI critical
-[MN]*.*.* DISCORD critical
-\d+:[a-zA-Z0-9_-]{35} TELEGRAM critical
-sq0*-* SQUARE high
-High-entropy base64 HIGH-ENTROPY medium
-
-Entropy threshold: Shannon entropy > 4.2, length 20-200, no scheme prefix, not pure digit/alpha, no whitespace.
-
-🪙 JWT Vulnerabilities
-
-Check Finding Severity
-alg: none JWT-VULN critical
-jwk header present JWT-VULN critical
-Missing exp claim JWT-WEAK medium
-Weak HS256 secret (wordlist) WEAK-JWT-SECRET critical
-
-JWT cracking works offline via hmac.compare_digest on candidate secrets — no network round-trip.
-
-🌐 DNS & Subdomains
-
-Detector Output
-A / AAAA / NS / MX / TXT / SRV / CAA / DNSKEY DNS-<TYPE>
-SPF (v=spf1) EMAIL-AUTH
-DMARC (v=DMARC1 @ _dmarc.) EMAIL-AUTH
-BIMI (default._bimi.) BIMI
-Reverse DNS (PTR) RDNS
-ASN (RDAP) ASN, ORG
-Zone Transfer (AXFR) DNS-ZONE-TRANSFER ⚠️
-CT log mining SUBDOMAIN
-CNAME dangling DANGLING-CNAME
-Takeover fingerprint SUBDOMAIN-TAKEOVER ⚠️
-
-Takeover providers detected: AWS S3, GitHub Pages, Heroku, Azure, Shopify, Tumblr, Fastly, Ghost, Pantheon, WordPress.com, Surge.sh, Bitbucket, Netlify, Vercel, Read the Docs, Cargo Collective.
-
-🧬 JavaScript Analysis
-
-Detector Description
-JS-AST Endpoints found via esprima AST (string literals, template literals)
-SOURCEMAP sourceMappingURL= references
-WS WebSocket endpoints
-FETCH fetch() / axios.*() call sites
-DOM-SINK Sink locations (innerHTML, eval, document.write)
-DOM-XSS Source→sink flow (naive taint tracking)
-POSTMESSAGE-FLAW addEventListener('message') without .origin check
-POSTMESSAGE-WILDCARD postMessage(..., '*')
-PROTO-POLLUTION __proto__ / constructor.prototype in merge contexts
-STORAGE-SENSITIVE localStorage.setItem('token', ...) style patterns
-LIB-VERSION jQuery, Bootstrap, React, Vue, Angular, Lodash, Moment, D3
-
-🍪 Cookies & Session
-
-Detector Description
-COOKIE Flags audit (Secure, HttpOnly, SameSite, prefixes)
-COOKIE-JWT JWT-in-cookie
-COOKIE-JSON Base64-decodes to JSON
-
-🛡️ Headers & TLS
-
-18 security headers audited: HSTS, CSP, CSP-RO, XFO, XCTO, Referrer-Policy, Permissions-Policy, Feature-Policy, COOP, COEP, CORP, XSS-Protection, X-Permitted-Cross-Domain-Policies, X-Download-Options, X-DNS-Prefetch-Control, Expect-CT, Clear-Site-Data, Cache-Control.
-
-CSP weaknesses: unsafe-inline, unsafe-eval, wildcard *, report-uri, report-to.
-
-HSTS: max-age < 1 year → HSTS-WEAK; preload / includeSubDomains → info.
-
-TLS: protocol version, cipher suite, issuer, subject, SAN list, expiry.
-
-🕸️ Active Probes (--passive disables)
-
-Probe Severity Method
-METHODS info OPTIONS → parse Allow
-METHOD-RISK high TRACE/PUT/DELETE/PATCH present
-OPEN-REDIRECT high Inject https://evil.example.com into next, url, redirect, return, returnUrl, continue
-CORS high ACAO: * or origin reflection
-CORS-PREFLIGHT high OPTIONS + Origin: evil.example.com
-CACHE-POISONING high Reflect X-Forwarded-Host etc. in cacheable response
-CACHE-DECEPTION high /path.css returns non-trivial body
-METHOD-OVERRIDE high X-HTTP-Method-Override: PUT changes behavior
-FAT-GET high GET-with-body rejected, GET-without accepted
-GRAPHQL high Introspection enabled on 5 common endpoints
-IDOR-CANDIDATE high Numeric sequence or UUID cluster across query params
-SENSITIVE-200 high HTTP 200 on a high-risk path
-ROBOTS-DISALLOW info Parsed Disallow: entries
-SITEMAP-URL info Parsed <loc> entries
-
-💰 Payments & Cloud
-
-Detector Description
-PAYMENTS Stripe PK, PayPal business=, Square, Cloudinary
-SECRET STRIPE-SK Live/test secret key (critical)
-CLOUD Firebase apiKey + projectId, Supabase
-AUTH Auth0, Okta, Cognito, Clerk, Firebase Auth
-MAPS Mapbox, Google Maps
-REALTIME Pusher, PubNub
-SEARCH Algolia app ID
-FEATURE-FLAGS LaunchDarkly client-side-id
-AB-TESTING Optimizely ID
-
-📊 Analytics & Error Tracking
-
-Detector Description
-ANALYTICS GA-UA, GA4, GTM, FB-Pixel, Hotjar, Segment
-ERROR-TRACKING Sentry, Rollbar, Datadog RUM, New Relic, Honeybadger
-CHAT Intercom, Drift, Crisp, Zendesk
-
-🖼️ Assets & Metadata (--deep-assets)
-
-Asset Type Analyzer Output
-Image PIL Dimensions, format, GPS coordinates, Make, Model, Software, DateTime
-PDF pypdf + regex fallback Author, Creator, Producer, Title, Subject, Pages
-Office zipfile docProps/core.xml → creator, company, manager
-Archive zipfile / tarfile File listing (up to 40 entries)
-SVG text Embedded <script>, xlink:href refs
-Font fontTools Name table entries
-
-📝 Comments & Content
-
-Detector Description
-COMMENT HTML comments containing TODO/FIXME/HACK/password/secret/token/admin/auth/bypass/...
-DEV-BANNER "lorem ipsum", "coming soon", "staging", "under construction"
-INTERNAL-ID data-id, data-user, data-session values
-EMAIL Harvested emails (filtered: no image extensions)
-PHONE International phone regex
-CRYPTO BTC, ETH, XMR addresses
-HASH MD5/SHA1/SHA256 hashes
-UUID UUID v1-v5
-
-🕵️ WAF & Bot-Challenge Detection
-
-WAF vendors: Cloudflare, Akamai, Incapsula, Sucuri, AWS CloudFront, Fastly, F5 BIG-IP, Barracuda, ModSecurity, Imperva, DDoS-Guard.
-
-Bot challenges: Cloudflare, DataDome, Akamai, PerimeterX, Kasada. Detected on 429/503 responses and triggers per-host exponential backoff.
-
----
-
-🏗️ Architecture Deep-Dive
-
-SILKFANG is architected as a pipeline of async workers fed by a single queue.
+-q filters out types that are informational-but-noisy:
 
 ```
-┌──────────────┐
-│   Target URL │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────────┐
-│   run_probes()   │  ← DNS, TLS, subdomains, path fuzz, GraphQL, CORS...
-│   (background)   │
-└──────┬───────────┘
-       │
-       ▼
-┌──────────────────┐     ┌─────────────────────┐
-│   asyncio.Queue  │◄────│   Crawler.enqueue   │
-│   (bounded)      │     │  scope check + norm │
-└──────┬───────────┘     └─────────────────────┘
-       │
-       ▼ (N workers)
-┌──────────────────┐
-│    worker()      │
-│  1. throttle     │
-│  2. stealth.wait │
-│  3. handle()     │
-└──────┬───────────┘
-       │
-       ▼
-┌──────────────────┐
-│   _fetch()       │  ← 3× retry, backoff on 429/503
-│   headers built  │
-│   UA rotated     │
-└──────┬───────────┘
-       │
-       ▼
-┌──────────────────┐
-│   handle()       │
-│  ┌─────────────┐ │
-│  │ content-type│ │
-│  │ dispatcher  │ │
-│  └──────┬──────┘ │
-│         │        │
-│  ┌──────▼──────┐ │
-│  │ HTML parser │ │ → extract_all()
-│  │ JS parser   │ │ → mine_js_deep()
-│  │ CSS parser  │ │ → parse_css()
-│  │ JSON parser │ │ → mine_json_deep()
-│  └─────────────┘ │
-└──────┬───────────┘
-       │
-       ▼
-┌──────────────────┐
-│   LiveStream     │───► Terminal (Rich)  ──► JSONL (file)
-│   .emit()        │
-└──────────────────┘
+FETCHED · INFO · TECH-ID · EXTERNAL-DOMAIN · IMG · PRELOAD
+META · OG · MICRODATA · ICON · HEARTBEAT · HUD
 ```
 
-Key Components
+All findings that imply something concrete was found still stream.
 
-Stealth — Per-host state machine. Tracks backoff, failure count, last request time. Rotates UA from a shuffled pool, cycles Chrome sec-ch-ua headers when UA is Chromium-based, adds Sec-Fetch-* for realism.
+JSONL mode
 
-Crawler — The orchestrator. Runs N workers against a single asyncio.Queue. enqueue() runs scope checks, binary detection, and populates the queue. handle() is the per-response dispatcher.
-
-LiveStream — Central event emitter. Dedupes (type, key, value) triples, counts severity, and routes to Rich console or JSONL or both.
-
-ClientWrapper — Unified curl_cffi / httpx facade. When curl_cffi is available, uses impersonate="chrome120" for TLS fingerprint realism. Otherwise falls back to httpx.
-
-StateStore — Append-only JSONL checkpoint file. Written every 30s and on Ctrl-C. Loaded with --resume.
-
-extract_all() — The HTML extractor. Parses with lxml (fallback html.parser), handles <base> resolution, <noscript>, data-* attributes, srcset, meta refresh, JSON-LD, microdata, comments, style attributes, and every known link-bearing tag.
-
-mine_js_deep() — The JS analyzer. Uses esprima AST when available, else regex fallback. Also runs secret scanning, JWT audit, DOM-sink analysis, proto-pollution, storage-write, and fetch-call detection.
-
-Why Async?
-
-A typical crawl visits 100-500 pages, each with 20-100 assets. A synchronous scanner doing 5 req/s takes 5-20 minutes. SILKFANG with 10 workers and rate-limited stealth does the same in 2-4 minutes without tripping WAFs (the rate limiting is applied per-host, not globally).
-
-Why curl_cffi?
-
-Modern WAFs (Cloudflare Bot Management, Akamai, PerimeterX) fingerprint TLS handshakes via JA3/JA4. Python's ssl module produces a very different TLS fingerprint from Chrome — trivially blocked. curl_cffi uses actual curl+boringssl with matching cipher suites and extensions, mimicking Chrome's JA3.
-
-Fallback: If curl_cffi is missing, SILKFANG uses httpx — works but is more likely to trigger bot challenges.
-
----
-
-📊 Output Formats
-
-Standard Report (.txt)
-
-Tab-separated: TYPE\tKEY\tVALUE
-
-```
-SECRET	https://cdn.target.com/app.js	AKIAIOSFODNN7EXAMPLE
-CORS	https://api.target.com/	reflects https://evil.com
-SENSITIVE-200	https://target.com/.env	len=2048 snip=DB_HOST=...
-GRAPHQL	https://api.target.com/graphql	introspection enabled
-```
-
-Files written to output/:
-
-File Contents
-{fqdn}-{mode}.txt All findings, deduped
-{fqdn}-visited.txt URLs fetched
-{fqdn}-all-urls.txt All URLs discovered
-{fqdn}-assets.txt Binary assets discovered
-{fqdn}-params.txt Query param names harvested
-{fqdn}-{mode}.sarif SARIF (with --sarif)
-
-JSON-Lines (--jsonl)
-
-Each finding is one JSON object:
+-j emits one JSON object per line to stdout:
 
 ```json
-{
-  "type": "SECRET",
-  "url": "https://cdn.target.com/app.js",
-  "value": "AKIAIOSFODNN7EXAMPLE",
-  "target": "https://target.com",
-  "severity": "critical",
-  "ts": "2024-01-15T15:42:01"
-}
+{"type":"SECRET","url":"https://t/static/app.js","value":"AWS-KEY AKIAIOSFODNN7EXAMPLE","target":"https://t","severity":"critical","ts":"2025-01-15T12:34:56"}
+{"type":"HDR-","url":"https://t/","value":"CSP MISSING","target":"https://t","severity":"medium","ts":"2025-01-15T12:34:57"}
 ```
 
-Pipe-friendly:
+Pipe straight into jq, rg, or a SIEM:
 
 ```bash
-python3 silkfang.py https://target.com --jsonl -q --silent \
-  | jq 'select(.severity=="critical") | .value'
+python silkfang.py https://t -j -y | jq 'select(.severity=="critical")'
 ```
 
-SARIF (--sarif)
+HUD line
 
-GitHub Code Scanning compatible. Upload via:
+While running, a HUD line refreshes every 2 seconds (suppressed in -j/--silent):
 
-```yaml
-- uses: github/codeql-action/upload-sarif@v3
-  with:
-    sarif_file: output/target.com-all.sarif
+```
+RUNNING   https://target.example                                pages 42/100 assets 118 find 231 t 12s r 3.5/s
 ```
 
-Baseline Diffing (--baseline)
+When per-host backoff is active, a second line appears:
 
-Run periodically against the same target and diff findings:
-
-```bash
-python3 silkfang.py https://target.com --baseline output/target.com-all.txt
-# + 3 new findings since baseline
-# + SECRET  https://cdn.target.com/new.js  AKIA...
-# + CORS    https://api.target.com/        wildcard ACAO
-# + GRAPHQL https://api.target.com/graphql introspection enabled
+```
+⏸ backoff api.target.example:30s, www.target.example:15s
 ```
 
 ---
 
-🧪 Advanced Workflows
+Offensive Capabilities
 
-Workflow 1 — Daily Attack-Surface Delta
+HTTP method discovery
 
-```bash
-#!/bin/bash
-# /etc/cron.daily/silkfang-delta
-set -euo pipefail
-TARGET="${1:-https://example.com}"
-PREV="output/$(echo "$TARGET" | sed 's|https\?://||;s|/|_|g')-all.txt"
+OPTIONS / is issued. If Allow: is returned, every method is logged. Any of TRACE, PUT, DELETE, PATCH, CONNECT, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, UNLOCK present triggers METHOD-RISK.
 
-python3 silkfang.py "$TARGET" -m 2000 --fast -y \
-  --baseline "$PREV" 2>&1 | mail -s "SILKFANG delta: $TARGET" soc@example.com
+A separate TRACE / attempt is made. If the response echoes TRACE and returns 200, METHOD-RISK: TRACE enabled (XST) fires.
+
+Open-redirect injection
+
+For each of 20 parameters (next, url, redirect, return, returnUrl, continue, redirect_uri, redirect_url, callback, callback_url, target, dest, destination, goto, to, link, forward, redir, r, u, out, view, ref, referrer) a GET is issued with ?param=https://evil.example.com and follow_redirects=False. If Location contains evil.example.com, OPEN-REDIRECT fires with the exact URL.
+
+CORS preflight probe
+
+1. OPTIONS / with Origin: https://evil.example.com and Access-Control-Request-Method: GET.
+2. If Access-Control-Allow-Origin reflects evil.example.com, CORS-PREFLIGHT fires.
+3. GET / with Origin: null. If Access-Control-Allow-Origin: null is reflected, CORS-PREFLIGHT fires again.
+
+Cache poisoning
+
+A canary of the form silkfang-NNNN is injected into each of 15 headers: X-Forwarded-Host, X-Forwarded-For, X-Original-URL, X-Rewrite-URL, X-Forwarded-Scheme, X-Forwarded-Port, X-Forwarded-Proto, X-Host, X-Backend, X-Real-IP, X-Proxy-Host, Forwarded, X-Original-Host, X-HTTP-Host-Override.
+
+If the canary appears in the response body and the response is Cache-Control: public (or has an Age: header), CACHE-POISONING fires with the specific header name.
+
+Cache deception
+
+The path is requested with each of .css, .js, .png, .gif, .ico, .woff, .woff2, .svg, .jpg, .jpeg, .webp, .txt appended. If any of those returns a 200 with a body > 500 bytes whose MD5 does not match the control body, CACHE-DECEPTION fires.
+
+HTTP method override
+
+POST / is issued as a control. Then POST / is issued with each of X-HTTP-Method-Override, X-HTTP-Method, X-Method-Override set to each of PUT, DELETE, PATCH.
+
+If the overridden request returns 200/204 while the control returns ≥ 400, METHOD-OVERRIDE fires.
+
+FAT-GET detection
+
+GET / with Content-Type: application/x-www-form-urlencoded is issued. If it returns 400 while the plain GET / returns 200, FAT-GET fires.
+
+GraphQL introspection
+
+For each of /graphql, /api/graphql, /v1/graphql, /query, /gql, /api/query, /api/gql, /v2/graphql, /graphql/v1, /api/v1/graphql, /graphql-api, /graph:
+
+1. POST with Content-Type: application/json, body {"query": "{__schema{types{name fields{name}}}}"}.
+2. POST with Content-Type: application/graphql, body {__schema{types{name fields{name}}}}.
+
+If the response body contains __schema, GRAPHQL fires. If the body also contains mutation, GRAPHQL fires again with mutations present.
+
+Path brute-force
+
+FUZZ_PATHS contains 200+ common strings. A semaphore caps concurrency at 8. Each path is requested as BASE/path. Any of 200, 301, 302, 401, 403 triggers PATH with the status and body length. 200 hits are also enqueued for deeper crawling.
+
+Sensitive path enumeration
+
+SENSITIVE_PATHS contains 200+ paths. Each is enqueued through the normal crawl pipeline, which means every fetched result goes through the same SENSITIVE-200 handler:
+
+```python
+if r.status_code == 200 and path in HIGH_RISK_SENSITIVE:
+    stream.emit("SENSITIVE-200", url, f"len=... snip=...")
 ```
 
-Workflow 2 — Authenticated SPA Crawl
+The HIGH_RISK_SENSITIVE set narrows to ~100 paths where a 200 is very interesting: .env*, .git/*, .svn/*, wp-config.php, config.php, backups (.zip, .sql, .tar.gz, .rar), Dockerfile, docker-compose.yml, package.json, composer.lock, requirements.txt, Gemfile, .github/workflows/, .vscode/, .idea/, actuator/env, actuator/heapdump, actuator/threaddump, server-status, phpinfo.php, settings.py, next.config.js, nuxt.config.js, webpack.config.js, etc.
 
-```bash
-python3 silkfang.py https://app.target.com -m 1000 \
-  --cookie "$(cat .cookie)" \
-  --bearer "$(cat .token)" \
-  --crawl-scope '/app|/api|/dashboard' \
-  --jwt-wordlist /usr/share/wordlists/jwt-secrets.txt
-```
+IDOR correlation
 
-Workflow 3 — Bug Bounty Program (Respectful)
-
-```bash
-python3 silkfang.py https://bugbounty.target.com \
-  -m 500 \
-  --min-delay 1.5 --max-delay 4.0 \
-  --cookie "$BB_COOKIE" \
-  -fs rdn -cs '^https://bugbounty\.target\.com' \
-  --sarif --baseline baseline.txt
-```
-
-Note the slow rate (--min-delay 1.5) — responsible scanning.
-
-Workflow 4 — Passive-Only Fingerprinting
-
-For hostile CDNs or strict WAFs:
-
-```bash
-python3 silkfang.py https://target.com \
-  -m 20 --passive \
-  --no-subdomains \
-  --quiet
-```
-
-Only fetches the target page and follows same-origin links.
-
-Workflow 5 — SIEM / Splunk Ingestion
-
-```bash
-python3 silkfang.py https://target.com --jsonl -q --silent \
-  | tee -a /var/log/silkfang.jsonl
-```
-
-Then in Splunk:
+Every crawled URL is scanned for query parameters. Numeric parameter values of the form ^\d{1,7}$ are grouped by (path, param). If two or more distinct values exist within a 1000-wide window, IDOR-CANDIDATE fires:
 
 ```
-index=security sourcetype=silkfang severity="critical"
-| stats count by type, url
+IDOR-CANDIDATE  → /user/profile?id= numeric seq 1..42 (7 samples)
 ```
 
-Workflow 6 — CI/CD Secret Gate
+UUID values ^[0-9a-f]{8}-[0-9a-f]{4}-…$ are grouped similarly. Two or more distinct UUIDs → IDOR-CANDIDATE.
+
+---
+
+Defensive Audit Capabilities
+
+Security header audit
+
+SEC_HEADERS maps 60+ header names to short labels. Every header is emitted either as HDR+ (present) or HDR- (missing). Presence does not guarantee correctness — but absence is always a signal.
+
+HSTS deep-inspection
+
+If Strict-Transport-Security is present:
+
+· max-age below 31536000 → HSTS-WEAK
+· preload present → HSTS-PRELOAD
+· includeSubDomains present → HSTS-SUBDOMAINS
+
+CSP deep-inspection
+
+· unsafe-inline → CSP-WEAK
+· unsafe-eval → CSP-WEAK
+· * present → CSP-WEAK
+· report-uri extracted → CSP-REPORT-URI
+· report-to extracted → CSP-REPORT-TO
+
+Cookie audit
+
+For every Set-Cookie:
+
+· flags=Secure|HttpOnly|SameSite or flags=NONE
+· domain, path, __Host- / __Secure- prefix presence
+· If the value looks like a JWT (value.count('.') == 2), it is audited via audit_jwt.
+· If the value base64-decodes to JSON, COOKIE-JSON fires.
+
+CORS audit
+
+· Access-Control-Allow-Origin: * → CORS
+· Access-Control-Allow-Origin: * and Access-Control-Allow-Credentials: true → CORS CREDENTIALS+WILDCARD (critical)
+· Access-Control-Allow-Origin: <something-else> → CORS reflects <something>
+· Access-Control-Allow-Methods → CORS-METHODS
+· Access-Control-Allow-Headers → CORS-HEADERS
+
+Redirect chain audit
+
+Every redirect in resp.history is emitted as REDIRECT <index>:<status> with the URL. Full chain visible.
+
+---
+
+Technology Fingerprinting
+
+fingerprint_tech(resp, body, stream) walks four independent signals:
+
+1. HTML markers
+
+Marker Tech
+wp-content, wp-includes, /wp-json/ WordPress
+csrfmiddlewaretoken Django
+__viewstate ASP.NET
+ng-version, ng-app Angular
+__next_data__ Next.js
+_nuxt Nuxt
+data-reactroot, react-dom React
+vue.js, vue.runtime Vue
+__svelte Svelte
+data-turbo Hotwire/Turbo
+astro-island Astro
+remix Remix
+gatsby Gatsby
+swagger-ui Swagger UI
+docusaurus Docusaurus
+hugo Hugo
+jekyll Jekyll
+eleventy Eleventy
+shopify Shopify
+magento Magento
+drupal Drupal
+joomla Joomla
+grav Grav
+concrete5 Concrete5
+modx MODX
+typo3 TYPO3
+craft Craft CMS
+statamic Statamic
+contentful Contentful
+sanity Sanity
+prismic Prismic
+
+…and 40+ more.
+
+2. X-Powered-By / Server markers
+
+express, django, flask, php, asp.net, nginx, apache, iis, cloudflare, tomcat, jboss, gunicorn, uvicorn, kestrel, caddy, traefik, envoy, haproxy, varnish, lighttpd, openresty, litespeed, node, deno, bun, puma, unicorn, passenger, phusion, werkzeug, rails, laravel, symfony, codeigniter, cakephp, yii, zend, spring, quarkus, micronaut, vertx, netty — all matched.
+
+3. Cookie names
+
+wp-, phpsessid, jsessionid, laravel_session, csrftoken, _next, __cf, asp.net_sessionid, _shopify, _ga, _gid, _fbp, _hjid, __hs, _mkto, _intercom, __stripe — all matched.
+
+4. Server header full-string
+
+The literal Server: header is fingerprinted against the same list.
+
+Every hit produces one TECH-ID emit. Deduplicated, so a page that mentions react twelve times still emits React once.
+
+Library version extraction
+
+LIB_VERSION_PATTERNS maps 35+ libraries to version-capturing regexes. Example hits:
+
+```
+LIB-VERSION  jQuery    3.6.0
+LIB-VERSION  Bootstrap 5.2.3
+LIB-VERSION  React     18.2.0
+LIB-VERSION  Vue       3.4.21
+LIB-VERSION  Angular   17.1.0
+```
+
+These versions drive manual CVE research. SILKFANG does not perform automatic CVE matching — that's a decision for the operator.
+
+---
+
+JavaScript Deep Mining
+
+mine_js_deep(js_text, js_url, stream) is the workhorse. It runs eight independent analyses on every JavaScript blob:
+
+1. AST parse (esprima)
+
+If esprima is installed, the JS is parsed (script first, module fallback). A recursive walk collects every Literal string value and every TemplateLiteral raw string that begins with /, http://, https://, ws://, or wss://. Result: up to 300 JS-AST emits per blob, each of which is a candidate endpoint.
+
+If esprima is not installed, a regex fallback runs (RE_URL + RE_PATH) so the tool still works — you just lose the template-literal extraction.
+
+2. WebSocket URL extraction
+
+RE_WS — every ws:// and wss:// URL.
+
+3. Source-map discovery
+
+sourceMappingURL=<path> — the referenced map is joined against the JS URL and emitted as SOURCEMAP, then re-emitted as SOURCE-MAP with the exact URL. Fetch it manually — it will give you the original source tree.
+
+4. Secret scanning
+
+For each (pattern, label) in SECRET_PATTERNS:
+
+· Find up to 5 matches.
+· If label == HIGH-ENTROPY, require is_high_entropy_string() — length 20–200, mixed characters, no spaces, no / prefix, entropy > 4.2 bits/char.
+· If label is a credit-card class, require luhn_valid().
+· Emit SECRET <label> <match>.
+
+5. JWT audit
+
+RE_JWT finds every eyJ... triple. audit_jwt() decodes the header and payload, then:
+
+· alg=none → JWT-VULN
+· jwk in header → JWT-VULN
+· jku in header → JWT-VULN + URL
+· kid containing ../, /, or \ → JWT-VULN (kid injection)
+· exp missing → JWT-WEAK
+· password, pwd, secret, token, api_key, apikey in payload → JWT-SENSITIVE
+
+If --jwt-wordlist is passed and alg=HS256, HMAC-SHA256 is computed for each wordlist entry (first 10,000) against header.payload. Match → WEAK-JWT-SECRET with the offending word.
+
+6. postMessage audit
+
+· addEventListener('message') present but no event.origin check → POSTMESSAGE-FLAW
+· postMessage(..., '*') → POSTMESSAGE-WILDCARD
+
+7. DOM-XSS correlation
+
+Sources scanned: location.hash, location.search, location.href, document.URL, document.referrer, window.name, document.cookie, location.pathname, window.location, history.state.
+
+Sinks scanned: innerHTML, outerHTML, document.write, document.writeln, eval, setTimeout, setInterval, Function.
+
+Each (source, sink) pair produces DOM-XSS <src> → <sink>.
+
+8. Prototype pollution
+
+If __proto__ or constructor.prototype appears and an Object.assign, merge, extend, $.extend, _.merge, or $.fn.extend call appears within 80 characters, PROTO-POLLUTION fires with the surrounding context.
+
+9. Sensitive storage
+
+Every localStorage.setItem('key', ...) / sessionStorage.setItem('key', ...) where key contains any of token, auth, session, jwt, key, secret, user, password, credential, api, bearer, oauth, csrf, xsrf → STORAGE-SENSITIVE.
+
+10. Dynamic imports
+
+require('...'), import ... from '...', import('...') — every relative or absolute path is resolved against the JS URL and enqueued for fetching.
+
+11. Fetch/axios calls
+
+fetch('...') and axios.get/post/put/delete/patch('...') — endpoint extraction into FETCH emits.
+
+---
+
+Secret Detection Engine
+
+SECRET_PATTERNS is a list[tuple[regex, label]]. There are 44 distinct provider families and 60+ regexes. Every match is subject to two filters:
+
+1. HIGH-ENTROPY — every 32-to-45-character mixed-character string. Requires Shannon entropy > 4.2 to fire. This is the "I don't know what this is, but it looks like a key" detector. High false-positive rate, but occasionally catches things nobody has written a rule for yet.
+2. CREDIT-CARD — every 13-to-19-digit number. Requires luhn_valid().
+
+Full provider list:
+
+```
+AWS-KEY · AWS-STS · AWS-IAM · AWS-USER · AWS-ROLE
+STRIPE-LIVE · STRIPE-PK · STRIPE-TEST · STRIPE-RESTRICTED
+GOOGLE-API · SLACK-TOKEN · SLACK-APP
+GITHUB-PAT · GITHUB-OAUTH · GITHUB-USER · GITHUB-SERVER · GITHUB-REFRESH · GITHUB-FINE
+GITLAB-PAT · GITLAB-RUNNER
+PRIVATE-KEY · CERTIFICATE
+SENDGRID · MAILGUN · MAILGUN-KEY
+DIGITALOCEAN · DIGITALOCEAN-OAUTH
+ALIBABA · CLOUDINARY
+TWILIO · TWILIO-SID
+HUGGINGFACE · ANTHROPIC · OPENAI · OPENAI-PROJECT
+GCP-SA · DISCORD · TELEGRAM · SQUARE · JWT · HIGH-ENTROPY
+LINEAR · NOTION · AIRTABLE · AIRTABLE-PAT · FIGMA
+SHOPIFY · SHOPIFY-AT · SHOPIFY-SS · SHOPIFY-CA · SHOPIFY-PA
+COHERE · REPLICATE · OPENROUTER · GROQ · XAI · PERPLEXITY
+CLAUDE · MISTRAL · DEEPGRAM · ELEVENLABS · ASSEMBLYAI
+CLERK · SUPABASE-SECRET · SUPABASE-KEY
+VERCEL · NETLIFY · FLY · RAILWAY · RENDER · HEROKU
+DATADOG · PAGERDUTY · OPSGENIE · SLACK
+DISCORD-WEBHOOK · DISCORD-HOOK · SLACK-HOOK
+MAPBOX-SK · STRIPE-SK · CREDIT-CARD · IBAN · SSN
+```
+
+Every hit includes only the first 80 characters of the matched value — enough to identify, not enough to accidentally leak in a screenshot.
+
+---
+
+Asset Intelligence — The Deep Analyzer
+
+When --deep-assets is passed, every binary asset reached by the crawler is downloaded and passed to deep_analyze_asset(), which dispatches by extension.
+
+Images (.png .jpg .jpeg .gif .bmp .webp .tif .tiff)
+
+Requires Pillow. Emits:
+
+· ASSET-DIM — width × height × format
+· EXIF-MAKE, EXIF-MODEL, EXIF-SOFTWARE, EXIF-DATETIME, EXIF-ARTIST, EXIF-COPYRIGHT, EXIF-IMAGEDESCRIPTION, EXIF-USERCOMMENT, EXIF-HOSTCOMPUTER, EXIF-LENSMODEL, EXIF-LENSMAKE, EXIF-SERIALNUMBER, EXIF-CAMERAOWNERNAME, EXIF-BODYSERIALNUMBER, EXIF-IMAGEUNIQUEID, EXIF-OWNERNAME
+· EXIF-GPS — full GPS IFD as string
+
+GPS-bearing images are the single most useful asset finding for social-engineering engagements.
+
+PDFs (.pdf)
+
+Requires pypdf for full parsing; falls back to raw-header regex.
+
+· PDF-META — Author, Creator, Producer, Title, Subject, Keywords, CreationDate, ModDate, Trapped
+· PDF-PAGES — page count
+
+Office (.docx .xlsx .pptx .odt .ods .odp .epub)
+
+Unzips docProps/core.xml and extracts:
+
+· creator, lastModifiedBy, title, subject, description, keywords, company, manager, category, revision, created, modified
+
+Archives (.zip .tar .tgz .gz .doc .xls .ppt)
+
+Lists up to 60 entries per archive as ARCHIVE-ENTRY. Internal file names frequently leak directory structure, developer names, and internal project names.
+
+SVG (.svg)
+
+· <script in body → SVG-SCRIPT
+· Every xlink:href → SVG-REF
+
+Fonts (.ttf .otf .woff .woff2)
+
+Requires fonttools. Extracts name table records 1–20: family, subfamily, unique ID, full name, version, PostScript name, trademark, manufacturer, designer, description, vendor URL, designer URL, license, license URL, and more. Font metadata occasionally leaks vendor information.
+
+---
+
+Subdomain Intelligence & Takeover Hunting
+
+Aggregation sources
+
+1. crt.sh — certificate transparency. Two queries per domain (%.domain and domain). Every name_value is split on newlines and filtered for .domain or == domain.
+2. HackerTarget host-search — one query. hostname,ip CSV split.
+3. RapidDNS — HTML scrape. <td>hostname</td> extraction.
+4. AlienVault OTX passive DNS — JSON parse of passive_dns[].hostname.
+
+Up to 1,000 subdomains are emitted as SUBDOMAIN.
+
+Takeover validation
+
+For every discovered subdomain:
+
+1. Resolve CNAME — follow every CNAME record. Collect all canonical names.
+2. Match against TAKEOVER_CNAME_HINTS — 60+ providers, each with a list of substrings that identify their dangling infrastructure (e.g. s3.amazonaws.com, herokuapp.com, github.io, azurewebsites.net, myshopify.com, netlify.app, vercel.app, wordpress.com, ghost.io, pantheonsite.io, readthedocs.io, tilda.ws, webflow.io, wix.com, …).
+3. Fetch the live host. https://<subdomain> is retrieved.
+4. Match against TAKEOVER_FINGERPRINTS — per-provider "not found" strings.
+
+If a fingerprint matches, SUBDOMAIN-TAKEOVER fires with the specific provider and the CNAME that resolved to it.
+
+If the fetch fails entirely but a dangling CNAME exists, DANGLING-CNAME fires with the provider and CNAME — still exploitable, just not proven.
+
+The takeover fingerprint table
+
+The TAKEOVER_FINGERPRINTS dictionary contains 40+ providers, each with 1–3 fingerprints. Selected examples:
+
+Provider Fingerprint
+AWS S3 NoSuchBucket, The specified bucket does not exist, The specified key does not exist
+GitHub Pages There isn't a GitHub Pages site here
+Heroku No such app
+Azure 404 Web Site not found, This site is stopped
+Shopify Sorry, this shop is currently unavailable
+Tumblr There's nothing here.
+Fastly Fastly error: unknown domain
+Ghost The thing you were looking for is no longer here
+Pantheon The gods are wise
+WordPress.com doesn't exist. Would you like to search for it?
+Surge.sh project not found
+Bitbucket Repository not found
+Netlify Not found - Request ID
+Vercel The deployment could not be found
+Read the Docs The requested project was not found
+Zendesk Help Center Closed, This help center no longer exists
+Freshdesk There is no helpdesk here
+Tilda Please renew your subscription
+Webflow This site is not published
+Strikingly Sorry, this page is not available
+Wix Error ConnectYourDomain occurred
+Ngrok Tunnel 
+
+…and 20+ more.
+
+---
+
+DNS Deep Dive
+
+dns_deep(domain, stream) runs a fixed sequence of resolvers.
+
+Standard records
+
+A, AAAA, NS, MX, TXT, SRV, CAA, DNSKEY, SOA, PTR, SPF, TLSA, SSHFP, NAPTR — each emits DNS-<TYPE> <domain> <value> on every record found.
+
+Email authentication
+
+Record Query Emits
+DMARC _dmarc.domain TXT EMAIL-AUTH DMARC
+SPF domain TXT EMAIL-AUTH SPF
+DKIM (default) default._domainkey.domain TXT EMAIL-AUTH DKIM-DEFAULT
+DKIM (google) google._domainkey.domain TXT EMAIL-AUTH DKIM-GOOGLE
+DKIM (selector1) selector1._domainkey.domain TXT EMAIL-AUTH DKIM-SELECTOR1
+DKIM (selector2) selector2._domainkey.domain TXT EMAIL-AUTH DKIM-SELECTOR2
+DKIM (k1) k1._domainkey.domain TXT EMAIL-AUTH DKIM-K1
+
+Email policy
+
+· default._bimi.domain TXT → EMAIL-POLICY
+· _mta-sts.domain TXT → EMAIL-POLICY
+· _smtp._tls.domain TXT → EMAIL-POLICY
+· _dmarc.domain TXT → EMAIL-POLICY
+
+Well-known TXT
+
+· _acme-challenge.domain — ACME challenge presence
+· _dnslink.domain — IPFS / DNSLink presence
+· _github-pages-challenge.domain — GitHub Pages verification
+
+Reverse PTR + RDAP
+
+1. socket.gethostbyname(scope) → IP
+2. Reverse PTR (<reversed-ip>.in-addr.arpa) → RDNS
+3. RDAP lookup via ipwhois → ASN + ORG
+
+Zone transfer
+
+For each NS record:
+
+1. Resolve the NS hostname to an IP.
+2. Attempt dns.zone.from_xfr(dns.query.xfr(ns_ip, domain, timeout=5)).
+3. If successful → DNS-ZONE-TRANSFER + up to 100 ZONE-RECORD emits.
+
+AXFR is rare on modern DNS, but when it succeeds it is game-over. Worth the five seconds.
+
+---
+
+TLS Fingerprinting
+
+tls_deep(url, stream) performs a raw socket TLS handshake with check_hostname=False and verify_mode=CERT_NONE — this means the tool captures the cert even when it is expired or self-signed.
+
+Emits:
+
+· TLS-PROTO <hostname> <version> — TLSv1.3, TLSv1.2, …
+· TLS-CIPHER <hostname> <name> (<protocol>)
+· TLS issuer <org> — issuer organization name
+· TLS subject <cn> — subject common name
+· TLS expires <date> — notAfter
+· TLS SANs <comma-separated> — up to 50 SANs
+
+SANs frequently reveal staging hosts, internal domains, and additional attack surface that never appears in public DNS.
+
+---
+
+WAF & Bot-Challenge Detection
+
+WAF fingerprinting
+
+WAF_SIGNATURES is a dictionary mapping provider names to lists of (header, needle) tuples. None needle means "any non-empty value of this header counts."
+
+Provider list: Cloudflare, Akamai, Incapsula, Sucuri, AWS CloudFront, AWS WAF, Fastly, F5 BIG-IP, Barracuda, ModSecurity, Imperva, DDoS-Guard, FortiWeb, Citrix NetScaler, Radware, Wallarm, Signal Sciences, Rapid7, StackPath, KeyCDN, BunnyCDN, Gcore, Qrator, Vercel, Netlify, Deno Deploy, Cloudflare Workers, Fastly Compute.
+
+Cookie-based WAFs are handled separately (incap_ses, visid_incap are checked against the cookie jar).
+
+Any positive match emits WAF <provider> header=<header> and returns immediately — first match wins.
+
+Bot challenge detection
+
+detect_bot_challenge(resp) is called on every 429/503 response. BOT_CHALLENGE_SIGNATURES lists body and header markers for:
+
+· Cloudflare (cf-mitigated, just a moment, checking your browser)
+· DataDome (captcha-delivery)
+· Akamai (reference #, _abck)
+· PerimeterX (_px, px-captcha)
+· Kasada (x-kpsdk-ct)
+· hCaptcha
+· reCAPTCHA
+· Cloudflare Turnstile
+· Arkose / FunCaptcha
+· AWS WAF (aws-waf-token)
+· Imperva (_incap_ses)
+· F5 BIG-IP (bigip, ts_, mr_)
+· Sucuri
+· Wordfence
+· Shield
+
+Any hit → BOT-CHALLENGE <url> <vendor>. The stealth layer then backs off (exponential up to 300s) and retries.
+
+---
+
+Anti-Detection & Stealth Layer
+
+User-Agent pool
+
+USER_AGENTS contains 60+ distinct strings spanning:
+
+· Chrome 117–122 on Windows, macOS, Linux
+· Firefox 120–123 on Windows, macOS, Linux
+· Safari 16.5–17.3 on macOS
+· Edge 120–122
+· Opera 106–107
+· Brave 121–122
+· Vivaldi 6.4–6.5
+· Android Chrome 119–122, Samsung Internet 23
+· iOS Safari 16.6–17.3, iPadOS
+· Googlebot, Bingbot, YandexBot, Baiduspider, DuckDuckBot, Applebot
+· cURL 8.0–8.5, python-httpx, python-requests, Wget
+· Facebook, Twitter, LinkedIn, Slack, Telegram, WhatsApp preview bots
+
+The pool is shuffled at start and reshuffled on cycle.
+
+Header rotation
+
+For every request, build_headers() picks:
+
+· One User-Agent
+· One Accept variant from 11 options
+· One Accept-Language variant from 20 options
+· One sec-ch-ua variant from 8 options (only for Chrome-family UAs)
+· One sec-ch-ua-mobile, sec-ch-ua-platform, Sec-Fetch-* set matching the UA
+· One Referer (origin URL of the target)
+
+Accept-Encoding and Connection are fixed.
+
+Per-host scheduling
+
+Stealth.wait(url):
+
+1. If the host is in backoff, sleep until backoff_until.
+2. Acquire the global lock, enforce a per-host minimum spacing of 0.2 + uniform(0.05, 0.35) seconds.
+3. Sleep uniform(min_delay, max_delay).
+
+Stealth.mark_failure(url) increments failures and sets backoff_until = now + min(300, base * 2^(failures-1)) where base = 5.0.
+
+Stealth.mark_success(url) resets failures to zero.
+
+curl_cffi TLS impersonation
+
+When curl_cffi is available, ClientWrapper opens an AsyncSession(impersonate="chrome120"). This makes the TLS ClientHello match Chrome 120 exactly — JA3/JA4 fingerprint-safe against most naive WAF TLS checks.
+
+When curl_cffi is not available, httpx.AsyncClient is used with verify=False, http2=False. Less stealthy, but functional.
+
+Graceful shutdown
+
+SIGINT and SIGTERM are intercepted. On either, crawler.interrupt() sets _interrupted = True, workers drain the current fetch, and finally flushes the checkpoint. No findings are lost.
+
+---
+
+Resume & Checkpoint System
+
+StateStore maintains a .jsonl file per target FQDN:
+
+```
+output/.silkfang-state-<fqdn>.jsonl
+```
+
+Content structure:
+
+```
+{"k": "meta",     "v": {"target": "...", "mode": "all", "timestamp": ...}}
+{"k": "visited",  "v": "https://t/"}
+{"k": "visited",  "v": "https://t/about"}
+{"k": "assets",   "v": "https://t/logo.png"}
+{"k": "all_urls", "v": "https://t/api/users"}
+{"k": "result",   "v": ["SECRET", "AWS-KEY", "AKIA..."]}
+```
+
+Saving is atomic: it writes to .tmp then os.replaces. A crash mid-save cannot corrupt the checkpoint.
+
+Checkpoints occur every 30 seconds and always on finally. --resume loads the checkpoint and skips re-fetching every visited URL. --reset deletes it.
+
+The checkpoint survives Ctrl-C, SIGTERM, OOM-kill, and kill -9. (Only the 30-second window since the last write is lost.)
+
+---
+
+Output Formats
+
+Terminal (default)
+
+Live coloured, streamed. On completion, a summary panel:
+
+```
+COMPLETE  pages=142  assets=38  findings=1042  crit=3  high=47  med=82  low=201  info=709  elapsed=94.3s
+```
+
+Text file
+
+output/<fqdn>-<mode>.txt — one line per finding:
+
+```
+SECRET            https://t/app.js       AWS-KEY AKIAIOSFODNN7EXAMPLE
+HDR-              https://t/             CSP MISSING
+DOM-XSS           https://t/app.js       location.hash → innerHTML
+...
+```
+
+URL listings
+
+· output/<fqdn>-visited.txt — every URL crawled
+· output/<fqdn>-all-urls.txt — every URL discovered (visited + queued + asset)
+· output/<fqdn>-assets.txt — every binary asset found
+· output/<fqdn>-params.txt — every query parameter name discovered
+
+JSONL
+
+-j → stdout only, one JSON object per finding. Streamable directly into jq, rg, ELK, Splunk, or a custom indexer.
+
+SARIF
+
+--sarif → output/<fqdn>-<mode>.sarif, SARIF 2.1.0 compliant. Every finding becomes a SARIF result, every type becomes a rule. Severity mapping:
+
+· critical → error
+· high → error
+· medium → warning
+· low → note
+· info → note
+
+---
+
+SARIF Integration for CI/CD
+
+Upload the .sarif file to GitHub Advanced Security:
 
 ```yaml
-# .github/workflows/secret-gate.yml
-name: Secret Gate
-on: [pull_request]
+# .github/workflows/silkfang.yml
+name: silkfang
+on: [push, workflow_dispatch]
 jobs:
-  scan:
+  recon:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - run: pip install -r silkfang/requirements.txt
-      - run: |
-          python3 silkfang/silkfang.py "https://${{ secrets.PREVIEW_HOST }}" \
-            -m 50 --passive --jsonl --silent -q \
-            > findings.jsonl || true
-          if jq -e 'select(.type=="SECRET" and .severity=="critical")' \
-               findings.jsonl > /dev/null; then
-            echo "::error::Critical secret found in preview deployment"
-            exit 1
-          fi
+      - run: pip install -r requirements.txt
+      - run: python silkfang.py https://staging.mycorp.com -m 500 --sarif --silent -y
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: output/staging.mycorp.com-all.sarif
 ```
+
+Now every new secret, every new sensitive path, every new WAF misconfiguration appears as an alert on the exact PR that introduced it.
 
 ---
 
-🥷 Anti-Detection & Stealth
-
-SILKFANG takes evasion seriously.
-
-UA Rotation
-
-25+ real-world user agents, shuffled at start and every full cycle:
-
-· Chrome 120-122 (Windows, macOS, Linux, Android, iOS)
-· Firefox 122-123
-· Safari 17.2-17.3
-· Edge 122, Opera 107, Brave 122
-· Samsung Browser 23
-· Googlebot, Bingbot, Facebook, Twitter
-· curl/8.5.0, python-httpx/0.27.0, Wget/1.21.4
-
-Header Fidelity
-
-When UA is Chromium-family, SILKFANG generates consistent:
-
-· sec-ch-ua (3 variants, matched to major version)
-· sec-ch-ua-mobile, sec-ch-ua-platform (parsed from UA)
-· sec-fetch-dest, sec-fetch-mode, sec-fetch-site
-· Accept-Language (5 real-world locale variants)
-· DNT on Firefox
-· Upgrade-Insecure-Requests
-· Contextual Referer (same origin root)
-
-TLS fingerprinting: via curl_cffi impersonate="chrome120".
-
-Rate Limiting
-
-Two layers:
-
-1. Per-host spacing — minimum 0.2 + rand(0.05, 0.35) between requests to the same host
-2. Global jitter — rand(min_delay, max_delay) after each request, configurable via CLI
-
-Exponential Backoff
-
-On 429, 503, or fetch error:
-
-```
-backoff(n) = min(300s, base × 2^(failures - 1))
-```
-
-base defaults to 5s. After 6 failures, the host is paused for the full 300s. Successful requests reset the counter. The HUD shows active backoffs in red.
-
-Bot-Challenge Detection
-
-SILKFANG recognizes challenge pages from Cloudflare, DataDome, Akamai, PerimeterX, and Kasada, both via headers and body content. When detected, it emits BOT-CHALLENGE and backs off harder.
-
-What You Cannot Evade
-
-SILKFANG will not bypass:
-
-· Hard authentication (you must supply --cookie/--bearer)
-· CAPTCHAs (not solved)
-· JS-rendered SPAs (no headless browser; see Limitations)
-· mTLS (no client cert injection)
-· Cloudflare Turnstile / hCaptcha / reCAPTCHA v3 challenges
-
-It will handle:
-
-· Soft UA blocks (via rotation)
-· Header-based bot scoring (via header fidelity)
-· TLS/JA3 blocks (via curl_cffi)
-· Simple rate limits (via backoff)
-· Basic WAF rules (path fuzz is gentle and rate-limited)
-
----
-
-🎯 Scope Control
-
-The most important feature for responsible scanning. Two independent controls:
-
---field-scope
-
-Controls which hosts are fetched.
-
-Value Match rule Example
-rdn (default) Same registered domain a.target.com ✅ evil.com ❌
-fqdn Exact hostname only a.target.com ✅ b.target.com ❌
-dn Dot-boundary suffix a.target.com ✅ target.com ✅ nottarget.com ❌
-
-⚠️ rdn uses tldextract — a.target.co.uk and b.target.co.uk are the same registered domain, but a.target.co.uk and a.other.co.uk are not.
-
---crawl-scope
-
-Regex matched against the full URL. Only matches are crawled.
+Baseline Diffing
 
 ```bash
-# Only crawl the /app and /api subtrees
---crawl-scope '^https://app\.target\.com/(app|api)/'
+# First run — save baseline
+python silkfang.py https://t -o baseline -y
 
-# Exclude logged-out paths
---crawl-scope '^https://target\.com/(?!logout|signout)'
+# Later — diff against baseline
+python silkfang.py https://t --baseline baseline/t-all.txt -y
 ```
 
-Both must pass. This means you can safely run against https://bugbounty.target.com while allowing the crawler to follow CDN links to cdn.target.com only if -fs rdn is set (default), and block the payment processor stripe.target.com with -cs.
+diff_with_baseline() compares current findings against the baseline set and prints only the delta:
 
---passive
+```
+┌───────────────────────────────────────┐
+│ 47 new findings since baseline         │
+└───────────────────────────────────────┘
++ SECRET: https://t/v2/app.js → AWS-KEY AKIA...
++ SENSITIVE-200: https://t/.env.local → len=2048
++ SUBDOMAIN-TAKEOVER: staging.t → AWS S3 via s3.amazonaws.com
+```
 
-The nuclear option. Disables:
-
-· DNS zone transfer
-· Path brute-force
-· HTTP method probe
-· Open-redirect injection
-· CORS preflight
-· Cache poisoning/deception
-· Method override
-· Fat GET
-· GraphQL introspection
-· Subdomain takeover checks
-
-Leaves only passive fetches and DNS queries. Perfect for pre-engagement recon where you need to see the target without touching it.
+Perfect for weekly post-deploy audits.
 
 ---
 
-💾 Checkpointing & Resume
+Scope Control
 
-Long scans get interrupted. SILKFANG's checkpoint system is crash-safe and append-only.
+SILKFANG enforces scope at two levels.
 
-How It Works
+Field scope (-fs)
 
-Every 30s (and on SIGINT/SIGTERM):
+Controls which hostnames count as "in scope."
 
-1. Serialize current state to .silkfang-state-{fqdn}.jsonl.tmp
-2. os.replace() to .silkfang-state-{fqdn}.jsonl
+Value Behavior
+rdn (default) Registered domain + all subdomains. example.com, api.example.com, foo.bar.example.com are all in scope.
+fqdn Exact hostname only. example.com is in scope; api.example.com is not.
+dn Hostname and any subdomain of that hostname. example.com and api.example.com are in scope; example.co.uk is not.
 
-os.replace is atomic on POSIX. A crash mid-write leaves the old file intact — no corruption.
+Implementation uses tldextract for rdn and dn. fqdn is a plain string compare.
 
-The state file records:
+Crawl scope (-cs)
 
-· meta — target, mode, timestamp
-· visited — every URL fetched
-· assets — every binary asset discovered
-· all_urls — every URL discovered
-· result — every finding (type, key, value)
-
-Resume Workflow
+An optional regex. If set, only URLs whose full string matches the regex are enqueued for crawling. Example:
 
 ```bash
-# Run #1 (interrupt with Ctrl-C)
-$ python3 silkfang.py https://target.com -m 5000
-^C
-⏸ Interrupt — flushing results...
-[results saved]
-
-# Run #2 — continues from where Run #1 stopped
-$ python3 silkfang.py https://target.com -m 5000 --resume
-INFO  https://target.com  resume visited=1432 findings=87
+# Only crawl /api and /v2 paths
+python silkfang.py https://t -cs '^https://t/(api|v2)/' -y
 ```
 
-Clean Slate
+Both checks run inside _in_scope(). Anything failing either check is dropped before it enters the queue.
+
+---
+
+Operational Playbooks
+
+Playbook 1 — Quick external attack-surface map
 
 ```bash
-$ python3 silkfang.py https://target.com --reset
+python silkfang.py https://target.example -m 300 -w 15 --fast -y
 ```
 
-Deletes the checkpoint and starts fresh. Useful when you've changed -fs or --crawl-scope and don't want stale URLs.
+· 300-page cap
+· 15 concurrent workers
+· Fast mode (no jitter)
+· Interactive menu → pick 1 OFFENSIVE
 
-Where the State Lives
+Expected output: subdomain list, sensitive path hits, technology stack, JS endpoints, any leaked secrets.
 
-output/.silkfang-state-{fqdn}.jsonl. It's not a .txt report — it's internal machinery. Deleting it is always safe.
+Duration: 3–8 minutes for a medium-sized target.
+
+Playbook 2 — Full-site defensive audit
+
+```bash
+python silkfang.py https://myapp.mycorp.com --unlimited -y
+```
+
+· No cap
+· Menu → pick 2 DEFENSIVE
+
+Expected output: header audit, cookie audit, CORS audit, TLS cert report.
+
+Duration: depends on size; typically under 15 minutes.
+
+Playbook 3 — Authenticated crawl
+
+```bash
+python silkfang.py https://myapp.mycorp.com \
+  --cookie "session=$(cat session.txt)" \
+  --unlimited -y
+```
+
+Or bearer:
+
+```bash
+python silkfang.py https://api.mycorp.com \
+  --bearer "$(cat token.txt)" \
+  --unlimited -y
+```
+
+All requests carry the credential. Crawl into authenticated areas of the app.
+
+Playbook 4 — JWT offline crack
+
+```bash
+python silkfang.py https://myapp.mycorp.com \
+  --jwt-wordlist rockyou.txt \
+  -m 50 -y
+```
+
+Any HS256 JWT found in a cookie, JS blob, or HTML is tested against the first 10,000 words of the wordlist.
+
+Playbook 5 — Full red-team recon (combined)
+
+```bash
+python silkfang.py https://target.example \
+  --unlimited --deep-assets -w 20 --sarif --jsonl -y > findings.jsonl
+```
+
+· Unlimited crawl
+· Deep asset analysis (EXIF, PDF, Office, ZIP)
+· 20 workers
+· SARIF + JSONL output
+
+Then:
+
+```bash
+jq 'select(.severity=="critical")' findings.jsonl
+```
+
+Playbook 6 — Continuous recon with baseline diffing
+
+```bash
+# Day 1
+python silkfang.py https://target.example -o baseline1 -y
+
+# Day 2
+python silkfang.py https://target.example -o day2 --baseline baseline1/target.example-all.txt -y
+```
+
+Only new findings are printed to the delta panel. Perfect for monitoring a bug-bounty target.
+
+Playbook 7 — Resume an interrupted scan
+
+```bash
+# Interrupted
+python silkfang.py https://target.example --unlimited -y
+# ^C
+
+# Continue
+python silkfang.py https://target.example --unlimited --resume -y
+```
+
+The checkpoint in output/.silkfang-state-*.jsonl restores visited URLs, assets, and prior findings.
+
+Playbook 8 — Batched multi-target
+
+```bash
+cat targets.txt
+# https://target1.example
+# https://target2.example
+# https://target3.example
+
+python silkfang.py -l targets.txt --silent --jsonl -y > all-findings.jsonl
+```
+
+Runs the ALL profile on each in sequence, streaming JSONL continuously.
+
+Playbook 9 — Bug bounty scope lockdown
+
+```bash
+python silkfang.py https://target.example \
+  -fs fqdn \
+  -cs '^https://target\.example/' \
+  --no-subdomains \
+  --passive \
+  -y
+```
+
+· Only the exact FQDN
+· Only URLs starting with https://target.example/
+· No subdomain lookup
+· No active probes
+· Zero out-of-scope traffic.
 
 ---
 
-🔄 CI/CD Integration
+Signature Library Reference
 
-GitHub Actions (full example)
+Secret patterns
 
-```yaml
-name: SILKFANG Nightly Recon
-on:
-  schedule:
-    - cron: '0 2 * * *'
-  workflow_dispatch:
+60+ regexes across 44 providers. See Secret Detection Engine.
 
-jobs:
-  recon:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    permissions:
-      contents: read
-      security-events: write
+Sensitive comments
 
-    steps:
-      - uses: actions/checkout@v4
+sensitive_comment_hints regex — matches HTML comments containing:
+todo, fixme, hack, bug, password, passwd, pwd, secret, token, api_key, api-key, apiKey, admin, internal, debug, staging, backup, private, hidden, vulnerable, xss, sqli, injection, bypass, auth, credential, apikey, aws, gcp, azure, client_secret, private_key, salt, hash, jwt, oauth, bearer, ssh, pem, cert, keystore, htpasswd, shadow, sudo, root.
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+Library version patterns
 
-      - name: Install
-        run: pip install beautifulsoup4 lxml tldextract rich \
-                           curl_cffi dnspython esprima \
-                           Pillow pypdf fonttools ipwhois
+35+ JS libraries: jQuery, jQuery-UI, jQuery-Mobile, Bootstrap, Foundation, Bulma, Tailwind, React, React-DOM, Redux, Vue, Vuex, Angular, Svelte, Ember, Backbone, Knockout, Lodash, Underscore, Moment, Day.js, D3, Chart.js, Three.js, GSAP, Axios, Socket.io, Handlebars, Mustache, RequireJS, Modernizr, Popper, Alpine, HTMX.
 
-      - name: Download prior baseline
-        run: |
-          curl -fsSL -o baseline.txt \
-            "https://artifacts.example.com/silkfang/${{ secrets.TARGET_SLUG }}-latest.txt" \
-            || echo "" > baseline.txt
+WAF signatures
 
-      - name: Scan
-        env:
-          TARGET: ${{ secrets.TARGET_URL }}
-          COOKIE: ${{ secrets.SESSION_COOKIE }}
-        run: |
-          python3 silkfang.py "$TARGET" \
-            -m 2000 -y \
-            --cookie "$COOKIE" \
-            --min-delay 1.0 --max-delay 3.0 \
-            --baseline baseline.txt \
-            --sarif \
-            -o output
+25+ providers: see WAF & Bot-Challenge Detection.
 
-      - name: Upload SARIF
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: output/*.sarif
+Bot challenge signatures
 
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: silkfang-output
-          path: output/
-          retention-days: 30
+15+ vendors: Cloudflare, DataDome, Akamai, PerimeterX, Kasada, hCaptcha, reCAPTCHA, Turnstile, Arkose, AWS WAF, Imperva, F5, Sucuri, Wordfence, Shield.
+
+Takeover fingerprints
+
+60+ providers, 40+ "not found" strings: see Subdomain Intelligence & Takeover Hunting.
+
+Analytics providers
+
+GA-UA, GA4, GTM, Facebook Pixel, Hotjar, Segment, Amplitude, Mixpanel, PostHog, Plausible, Matomo, Umami, Clarity, Heap, RudderStack, mParticle, Tealium.
+
+Error-tracking providers
+
+Sentry, Datadog RUM, New Relic, Rollbar, Honeybadger, Bugsnag, Raygun, LogRocket, FullStory.
+
+Chat providers
+
+Intercom, Drift, Crisp, Zendesk.
+
+CAPTCHA providers
+
+reCAPTCHA, hCaptcha, Cloudflare Turnstile.
+
+Map providers
+
+Mapbox, Google Maps, Here.
+
+Realtime providers
+
+Pusher, PubNub, Ably.
+
+Search providers
+
+Algolia, Typesense, MeiliSearch.
+
+---
+
+Sensitive Path Dictionary
+
+SENSITIVE_PATHS contains 200+ paths grouped by category. Selected highlights:
+
+Configuration files
+
+.env, .env.local, .env.production, .env.backup, .env.dev, .env.staging, .env.test, .env.old, .env.bak, .env.example, config.json, config.yaml, config.yml, settings.py, web.config, app.config, appsettings.json, .htaccess, .htpasswd.
+
+Version-control metadata
+
+.git/config, .git/HEAD, .git/logs/HEAD, .git/index, .gitignore, .git/refs/heads/master, .git/refs/heads/main, .git/packed-refs, .svn/entries, .svn/wc.db, .hg/, .bzr/, .DS_Store.
+
+WordPress
+
+wp-login.php, wp-admin/, wp-json/wp/v2/users, xmlrpc.php, wp-config.php, wp-config.php.bak, wp-config.php~, wp-content/debug.log, wp-content/uploads/, wp-includes/version.php.
+
+Admin panels
+
+administrator/, admin/, admin, admin.php, admin.html, login, login.php, login.html, signin, signin.php, dashboard, console, panel, cpanel, webadmin, manager.
+
+API surface
+
+api, api/, api/v1, api/v2, api/v3, api/v4, api/docs, api/swagger.json, api/openapi.json, api/swagger.yaml, api/graphql, api/users, api/admin, api/config, api/health, api/status, api/me, api/profile, api/token, api/auth.
+
+API documentation
+
+graphql, graphiql, altair, playground, voyager, apollo, swagger-ui/, swagger-ui.html, swagger.json, swagger.yaml, openapi.json, openapi.yaml, api-docs, docs, redoc, redoc.html.
+
+Spring Boot Actuator
+
+actuator, actuator/env, actuator/health, actuator/mappings, actuator/beans, actuator/heapdump, actuator/threaddump, actuator/metrics, actuator/loggers, actuator/info, actuator/auditevents.
+
+Well-known
+
+.well-known/security.txt, .well-known/openid-configuration, .well-known/change-password, .well-known/host-meta, .well-known/webfinger, .well-known/assetlinks.json, .well-known/apple-app-site-association, security.txt.
+
+Server diagnostic
+
+server-status, server-info, phpinfo.php, info.php, php.php, test.php, debug.php, config.php, config.php.bak.
+
+Backups
+
+backup.zip, backup.sql, backup.tar.gz, backup.rar, backup.7z, db.sql, dump.sql, site.tar.gz, www.zip, site.zip, db.sqlite.
+
+Robots / sitemap / feed
+
+robots.txt, sitemap.xml, sitemap_index.xml, sitemap-news.xml, sitemap-images.xml, sitemap-video.xml, feed, rss, atom.xml, blog/feed, news/feed.
+
+Package manifests
+
+package.json, package-lock.json, yarn.lock, pnpm-lock.yaml, composer.json, composer.lock, Gemfile, Gemfile.lock, requirements.txt, Pipfile, Pipfile.lock, pyproject.toml, go.mod, go.sum, Cargo.toml, Cargo.lock, pom.xml, build.gradle, build.gradle.kts, Makefile, CMakeLists.txt.
+
+CI/CD
+
+.github/workflows/, .github/, .circleci/config.yml, .gitlab-ci.yml, .travis.yml, azure-pipelines.yml.
+
+Build configuration
+
+.vscode/, .idea/, .editorconfig, .eslintrc, .eslintrc.json, .prettierrc, .babelrc, .browserslistrc, tsconfig.json, gulpfile.js, Gruntfile.js, webpack.config.js, vite.config.js, next.config.js, nuxt.config.js, svelte.config.js, astro.config.mjs.
+
+Container
+
+Dockerfile, docker-compose.yml, docker-compose.yaml, .dockerignore, kubernetes/, k8s/, helm/.
+
+A 200 response on any member of HIGH_RISK_SENSITIVE (the top ~100 of the above) triggers SENSITIVE-200 with a body snippet — these are the highest-value findings in the entire tool.
+
+---
+
+Developer Reference
+
+Extending the signature library
+
+All signature tables are module-level constants. To add a new secret pattern:
+
+```python
+# In SECRET_PATTERNS
+(r'NEWPROVIDER_[A-Za-z0-9]{40}', "NEWPROVIDER-KEY"),
 ```
 
-GitLab CI
+To add a new sensitive path:
 
-```yaml
-silkfang:
-  image: python:3.11-slim
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-  before_script:
-    - apt-get update && apt-get install -y build-essential libssl-dev libffi-dev
-    - pip install beautifulsoup4 lxml tldextract rich curl_cffi dnspython esprima
-  script:
-    - python3 silkfang.py "$TARGET_URL" -m 1000 -y --jsonl -q --silent -o output
-  artifacts:
-    when: always
-    paths: [output/]
-    expire_in: 1 month
-  timeout: 1h
+```python
+# In SENSITIVE_PATHS
+"/.newpath", "/new/config.json",
+# And optionally in HIGH_RISK_SENSITIVE
+"/.newpath",
 ```
 
-Jenkins (Declarative Pipeline)
+To add a new takeover fingerprint:
 
-```groovy
-pipeline {
-  agent any
-  triggers { cron('H 2 * * *') }
-  options { timeout(time: 60, unit: 'MINUTES') }
-  stages {
-    stage('Recon') {
-      steps {
-        sh '''
-          python3 -m venv .venv
-          . .venv/bin/activate
-          pip install -r requirements.txt
-          python3 silkfang.py "$TARGET" -m 2000 -y \
-            --cookie "$COOKIE" \
-            --sarif -o output
-        '''
-      }
-    }
-  }
-  post {
-    always {
-      archiveArtifacts artifacts: 'output/**', allowEmptyArchive: true
-    }
-  }
-}
+```python
+# In TAKEOVER_FINGERPRINTS
+"NewProvider": ["fingerprint string 1", "fingerprint string 2"],
+# In TAKEOVER_CNAME_HINTS
+"NewProvider": ["newprovider.com", "newprovider.io"],
+```
+
+To add a new WAF signature:
+
+```python
+# In WAF_SIGNATURES
+"NewWAF": [("server", "newwaf"), ("x-newwaf", None)],
+```
+
+To add a new JS library version pattern:
+
+```python
+# In LIB_VERSION_PATTERNS
+"newlib": re.compile(r'newlib[.\-/]?v?(\d+\.\d+(?:\.\d+)?)', re.I),
+```
+
+Adding a new analysis pass
+
+Every analysis function has signature f(input_text, source_url, stream) and emits via stream.emit(typ, key, val). To add a new one:
+
+1. Write the function.
+2. Call it from mine_js_deep (for JS), extract_all (for HTML), mine_json_deep (for JSON), or parse_css (for CSS).
+3. Add a severity mapping to SEVERITY if you introduce a new typ.
+4. Add a documentation entry.
+
+Adding a new active probe
+
+probe_* functions are async and receive (client, stealth, url, stream). Register them in Crawler.run_probes under the appropriate mode guard:
+
+```python
+if self.mode in ("offensive", "all") and not self.passive:
+    await probe_my_new_probe(client, self.stealth, self.start, self.stream)
+```
+
+Adding a new output format
+
+1. Subclass or extend Crawler.save_results.
+2. Walk self.results (a list of (typ, key, val) triples).
+3. Emit to your format.
+4. Hook into run_scan after crawler.run() completes.
+
+Adding a new stealth header
+
+In Stealth.build_headers, append to the dict:
+
+```python
+headers["X-Custom"] = my_random_value(),
+```
+
+The current implementation already produces a coherent Chrome/Firefox/Safari header set. Diverging carelessly will make the fingerprint more suspicious, not less.
+
+---
+
+Performance & Tuning
+
+Workers
+
+Workers Context
+5 Small site, polite crawl
+10 Default — balanced
+20–30 Larger sites, higher concurrency, still respectful of jitter
+50+ Only against your own property; jitter + backoff will still apply
+
+Workers are asyncio.Tasks running Crawler.worker. Each one loops on queue.get(). Queue depth is capped by max_pages minus pending.
+
+Rate limiting
+
+· -r 10 — global cap of 10 requests/second across all workers.
+· The per-host spacing enforced by Stealth.wait is independent of -r — it enforces a minimum per-host spacing regardless of global rate.
+
+Memory
+
+Each finding is a (str, str, str) tuple. At 10,000 findings, memory footprint is a few megabytes. visited, all_urls, assets are Python sets of strings — negligible.
+
+The LiveStream._seen set grows linearly with unique findings. On a very large target, if memory becomes an issue, patch _seen to a Bloom filter or a bounded LRU.
+
+Disk
+
+Checkpoint .jsonl grows linearly with visited URLs + findings. A 100,000-page crawl produces roughly 10 MB of checkpoint. Results file similar.
+
+uvloop
+
+Installing uvloop (auto-detected at import time) typically produces a 2–4× throughput improvement on Linux and macOS. On Windows, it is silently skipped.
+
+Large sites
+
+For sites with more than 100,000 pages, use:
+
+```bash
+python silkfang.py https://huge.site --unlimited -w 30 --fast -y \
+  -cs '^https://huge\.site/(docs|api|blog)/'
+```
+
+And run in --jsonl mode so terminal rendering does not become the bottleneck:
+
+```bash
+python silkfang.py https://huge.site --unlimited -w 30 -j -y > huge.jsonl
 ```
 
 ---
 
-📚 Real-World Case Studies
-
-Case Study 1 — The Forgotten .env
-
-Target: Fintech SaaS, ~3M MAU
-Profile: Offensive, -m 500
-Duration: 4 minutes
-
-SILKFANG's SENSITIVE_PATHS list included /.env. On a legacy marketing subdomain (legacy.target.com), an HTTP 200 response was returned for /.env. Contents:
-
-```
-DB_HOST=prod-db.target.internal
-DB_PASSWORD=...
-STRIPE_SECRET_KEY=sk_live_...
-AWS_ACCESS_KEY_ID=AKIA...
-```
-
-SENSITIVE-200 emitted with a length of 4127 and a snippet. The full report was in output/legacy.target.com-offensive.txt within 30 seconds of the scan starting — before the main target's pages were even fully crawled.
-
-Fix: Instant rotation of all exposed credentials, DNS removal of the legacy subdomain. The client was notified within 5 minutes of scan start.
-
-Case Study 2 — GraphQL Introspection in Production
-
-Target: E-commerce platform
-Profile: Offensive, --fast -m 200
-Duration: 90 seconds
-
-/api/graphql responded to {__schema{types{name}}} with full type definitions — 340 types, including:
-
-· AdminUser, AdminOrder, InternalTicket
-· Mutation.updatePrice, Mutation.refundOrder
-· CredentialRotationInput
-
-GRAPHQL at severity high. This wasn't a bug in itself, but it was the entry point to a P1 privilege-escalation report.
-
-Case Study 3 — Subdomain Takeover at Scale
-
-Target: Media conglomerate with 1,200 subdomains
-Profile: Offensive, --fast
-Duration: 18 minutes (mostly waiting on crt.sh rate limits)
-
-crt.sh mined 1,247 subdomains. Of those, 312 had CNAMEs pointing at *.herokuapp.com. 41 of those CNAMEs resolved to No such app — classic Heroku dangling CNAME.
-
-SUBDOMAIN-TAKEOVER × 41. The client was notified to claim the CNAMEs within 24 hours. All 41 were claimed by the client without incident.
-
-Case Study 4 — The Leaky PDF
-
-Target: Legal firm
-Profile: --deep-assets enabled
-Duration: 12 minutes
-
-A downloaded /downloads/annual-report.pdf had an Author field of j.smith@legalfirm.com and a Producer field of Microsoft® Word 2019. Not a vulnerability. But a downloaded /downloads/strategy-2024.pdf had Author: CEO_NAME, Keywords: confidential, M&A, acquisition target: AcmeCorp.
-
-PDF-META × N. The client had no idea that internal strategy documents were being published with metadata intact.
-
-Case Study 5 — IDOR by Clustering
-
-Target: Booking platform
-Profile: All, -m 3000
-Duration: 40 minutes
-
-Across 3,000 crawled URLs, SILKFANG extracted booking_id=10000 through booking_id=10047 from pagination and search results. IDOR-CANDIDATE on /api/bookings?booking_id= with numeric seq 10000..10047 (48 samples).
-
-Manual testing (with permission) showed booking_id=10001 returned a stranger's booking. The client had rate-limited but not access-controlled this endpoint.
-
-Case Study 6 — The CSP Bypass Heuristic
-
-Target: Healthcare portal
-Profile: Defensive
-Duration: 3 minutes
-
-CSP header included unsafe-inline and unsafe-eval and script-src *. CSP-WEAK × 3, severity medium. But combined with a reflected XSS observed on /search?q=, this CSP was effectively no protection at all.
-
-The client had added the CSP to "pass the security audit" — it was documented as a compensating control. It wasn't.
-
----
-
-🔧 Troubleshooting
+Troubleshooting
 
 "FATAL: beautifulsoup4 is required"
 
 ```bash
-pip install beautifulsoup4 lxml tldextract rich
+pip install beautifulsoup4 lxml
 ```
 
 "FATAL: tldextract is required"
@@ -1192,354 +1687,229 @@ pip install beautifulsoup4 lxml tldextract rich
 pip install tldextract
 ```
 
-On first run, tldextract downloads the public suffix list from publicsuffix.org. On airgapped systems:
+"FATAL: rich is required"
 
 ```bash
-python3 -m tldextract --update
-# or pre-download the cache and pass TLDEXTRACT_CACHE env var
+pip install rich
 ```
 
-Cloudflare turnstile loop / constant 503s
+curl_cffi import fails
 
-SILKFANG will detect and back off — but you'll get almost no results. Options:
-
-1. Ensure curl_cffi is installed (pip install curl_cffi)
-2. Slow down: --min-delay 3 --max-delay 8
-3. Use a residential proxy: --proxy http://user:pass@host:port
-4. Use --passive — Cloudflare rarely challenges passive reads
-5. Accept that you need a real browser
-
-uvloop.install() fails on Windows
-
-Expected. uvloop isn't available on Windows. The try/except handles it — you'll just run slower.
-
-"Address already in use" on repeated runs
-
-Rare port leak from socket.getaddrinfo. Kill lingering Python processes:
+Install the binary wheel:
 
 ```bash
-pkill -f silkfang.py
+pip install curl-cffi
+# or, on some systems:
+pip install curl-cffi --no-cache-dir
 ```
 
-UTF-8 / encoding errors from bodies
+If the wheel is unavailable for your platform, httpx is used as fallback — stealth drops but functionality is preserved.
 
-Add PYTHONIOENCODING=utf-8:
+esprima not installed
+
+SILKFANG works without esprima — the JS parser falls back to regex extraction. You lose template-literal endpoint detection, but everything else still works. Install with:
 
 ```bash
-PYTHONIOENCODING=utf-8 python3 silkfang.py https://target.com
+pip install esprima
 ```
 
-findings=0 on a live site
-
-Likely causes:
-
-1. Wrong scope — -fs rdn may match nothing if the target uses an unusual TLD. Try -fs dn.
-2. Blocked — you're being silently rate-limited. Try --min-delay 3.
-3. Cookies expired — refresh --cookie.
-4. Real site has nothing to find — rare, but possible.
-
-Debug with --jsonl --silent -q and inspect raw events.
-
-SENSITIVE-200 for a soft-404
-
-Some servers return 200 for every path (SPA catch-all). SILKFANG doesn't auto-detect this. If you see 30+ SENSITIVE-200 findings with len=<same>, the site is a soft-404. Ignore.
-
-SENSITIVE-200 for a real page
-
-Conversely, /admin returning 200 is normal. SENSITIVE-200 is only notable for paths in the HIGH_RISK_SENSITIVE set — .env, .git/config, backup.sql, phpinfo.php, etc.
-
-"BOT-CHALLENGE" spam
-
-Your requests are being challenged. This is information. It tells you the site has bot management. For results, you need a proxy or a slow rate.
-
-GraphQL "introspection enabled" but body is empty
-
-Some GraphQL servers return 200 with a JSON body of {"errors":[...]} when introspection is disabled. SILKFANG only reports GRAPHQL if the body contains __schema. If you get a false positive, let us know.
-
-High CPU on large crawls
-
-The bottleneck is BeautifulSoup + lxml parsing. Options:
-
-1. Increase workers (-w 20)
-2. Reduce page cap (-m 500)
-3. Use --fast (removes await asyncio.sleep overhead)
-
---resume doesn't resume
-
-Check output/.silkfang-state-{fqdn}.jsonl exists. The {fqdn} is computed via tldextract — verify it matches your target:
+"Neither curl_cffi nor httpx is available"
 
 ```bash
-ls -la output/.silkfang-state-*
+pip install curl-cffi
+# or
+pip install httpx
 ```
+
+DNS queries fail silently
+
+Check that dnspython is installed:
+
+```bash
+pip install dnspython
+```
+
+Without it, dns_deep, zone_transfer, subdomain_takeover_check, and crt_sh_subdomains's DNS portion are silently skipped. HTTP-based subdomain sources still work.
+
+Every request returns 403
+
+You are behind a WAF that does not like your headers. Options:
+
+1. Confirm curl_cffi is installed — Chrome TLS impersonation is the most effective counter.
+2. Slow down: --min-delay 2 --max-delay 5.
+3. Use a proxy: --proxy http://user:pass@proxy:port.
+4. Switch User-Agent pool (edit USER_AGENTS).
+5. Accept the 403s and move to another target.
+
+Cache poisoning findings are false positives
+
+SILKFANG reports cache poisoning only when both conditions are true:
+
+1. The canary reflects in the response body.
+2. The response is either Cache-Control: public or has an Age: header.
+
+If both are true, you almost certainly have a real issue. If you suspect a false positive, verify manually with cURL.
+
+Subdomain takeover findings are false positives
+
+The takeover check requires:
+
+1. A real CNAME to a known provider.
+2. A live HTTP fetch returning the provider's specific "not found" fingerprint.
+
+If you get a hit, the response body literally contains the provider's "site does not exist" message. Verify manually — this is nearly always genuine.
+
+Scan hangs
+
+· Check output/.silkfang-state-*.jsonl for the last visited URL.
+· Ctrl-C once — the checkpoint will flush.
+· Rerun with --resume.
+· If it hangs again on the same URL, exclude that path with -cs.
+
+Memory grows unbounded
+
+· Cap with -m instead of --unlimited.
+· Use --passive to skip active probes.
+· Narrow scope with -cs.
+
+--self-test fails
+
+```bash
+pip install -r requirements.txt
+python silkfang.py --self-test
+```
+
+If the failure is "ok": false with an err, install the missing core dependency named in the error.
 
 ---
 
-⚡ Performance Tuning
+FAQ
 
-Concurrency
+Q: Is SILKFANG safe to run against my own site?
+A: Yes. Use --fast only against your own property, since it disables the jitter delays.
 
--w CPU Memory Network Use case
-3 low low very gentle Prod-touching, polite
-10 (default) medium medium polite General use
-25 high high aggressive Own infra, fast result
-50+ very high very high hostile Never — you'll be blocked
+Q: Does SILKFANG find actual vulnerabilities?
+A: It finds classes of issues — secrets, misconfigurations, exposed paths, open redirects, IDOR candidates, takeover-able subdomains, weak JWT secrets, prototype-pollution patterns. It does not perform automated exploitation. Every finding requires a human to triage.
 
-Rate Limiting
+Q: Will it get me blocked?
+A: Almost certainly on a well-defended target. The stealth layer is sophisticated but not omniscient — Cloudflare Bot Management, DataDome, and Kasada will still detect a bot at scale. Reduce -w, increase --min-delay, and use curl_cffi.
 
---rate Behavior
-0 (default) Unlimited, but Stealth still spaces per-host
-5 5 req/s per host
-20 20 req/s per host
---fast All delays off, --rate 0
+Q: How does it compare to Amass, Subfinder, httpx, nuclei?
+A: SILKFANG is a single tool that does the surface-scanning work of those tools together, streaming results live. For deep subdomain enumeration use Amass. For deep vulnerability scanning use nuclei. SILKFANG is the reconnaissance engine that feeds them.
 
-Recommended Profiles
+Q: Does it support proxies?
+A: Yes, --proxy http://user:pass@host:port or --proxy socks5://host:port (socks5 requires curl_cffi).
 
-Polite (prod):
+Q: Does it handle authenticated targets?
+A: Yes, --cookie "name=value" or --bearer TOKEN. All requests carry the credential.
 
-```bash
--w 5 -r 3 --min-delay 2 --max-delay 5 -m 500
-```
+Q: What is the difference between --passive and --no-subdomains?
+A: --passive skips all active probes (path fuzz, method discovery, GraphQL, cache poisoning, takeover validation, redirect injection). --no-subdomains only skips subdomain aggregation and enqueueing — active probes still run against the main target.
 
-Balanced (default):
+Q: What does -fs fqdn do vs -fs rdn?
+A: rdn scopes to the registered domain — example.com and all its subdomains. fqdn scopes to the exact host — api.example.com only, nothing else.
 
-```bash
--w 10 -m 2000
-```
+Q: Why does --jsonl skip the menu?
+A: Because the menu requires a TTY. JSONL is meant for piping into other tools.
 
-Aggressive (own infra):
+Q: Can I run this in CI/CD?
+A: Yes. --silent --sarif -y is designed exactly for that. See SARIF Integration.
 
-```bash
--w 25 --fast -m 50000
-```
+Q: How do I resume after Ctrl-C?
+A: python silkfang.py <target> --resume -y. The checkpoint is auto-loaded.
 
-Passive (hostile target):
+Q: What is the difference between -j, --silent, and -q?
+A: -j/--jsonl outputs JSON lines to stdout, no menu. --silent is -j plus no coloured terminal output. -q still uses the interactive menu and coloured output but suppresses low-value types.
 
-```bash
--w 3 -r 1 --passive --min-delay 5 --max-delay 10 -m 50
-```
+Q: Can I add my own secret regex?
+A: Yes, append a (pattern, label) tuple to SECRET_PATTERNS. See Developer Reference.
 
-Where the Time Goes
+Q: Does it work on Windows?
+A: Yes. uvloop is skipped; all other functionality is identical.
 
-On a 1,000-page crawl with 10 workers:
+Q: What is --self-test?
+A: A minimal end-to-end check against https://example.com. If it succeeds and reports findings > 0, the tool is operational.
 
-Phase % of wall time
-Fetching HTML ~40%
-HTML parsing + extraction ~25%
-JS analysis ~15%
-Probes (DNS, TLS, subdomains) ~10% (parallel)
-Secret scanning ~10%
+Q: Is the .silkfang-state-*.jsonl file sensitive?
+A: It contains every URL crawled and every finding — that is, it may contain secrets, session IDs, and internal URLs. Treat it with the same care as the target itself.
 
-Memory
+Q: Does SILKFANG respect robots.txt?
+A: No. It parses robots.txt (to find disallowed paths, which are usually the most interesting), but it does not honour Disallow. This is deliberate — the tool is for authorized research, and robots directives are not a security control.
 
-Roughly ~80MB per 1,000 pages, ~1KB per finding, ~100 bytes per URL. A 10,000-page crawl peaks at ~500MB.
-
---deep-assets Cost
-
---deep-assets downloads every binary asset. On media-heavy sites, this can be 10-100× slower and consume significant disk/network. Use with -m 100 and -w 3.
+Q: What about security.txt?
+A: It does fetch and parse security.txt, because it identifies the correct disclosure contact for the target.
 
 ---
 
-⚖️ Legal & Ethics
+Roadmap
 
-TL;DR
-
-Only scan targets you own or have written permission to test.
-
-What SILKFANG Does That Requires Authorization
-
-· HTTP fetches (even to / — unauth'd GET is a computer access)
-· DNS lookups (generally fine, but aggregates look like recon)
-· Active probes — method fuzz, CORS preflight, GraphQL introspection, path brute-force, cache poisoning probes, open-redirect injection, DNS zone transfer attempts
-· Subdomain takeover checks — sends requests to third-party providers
-
-What SILKFANG Does That Does NOT Require Authorization
-
-· Reading its own source code
-· Scanning localhost, 127.0.0.1, or your own lab VMs
-· Reading public data offline
-· --self-test against example.com (passive only, well-known safe target)
-
-Applicable Laws
-
-Jurisdiction Statute Notes
-🇺🇸 USA CFAA (18 U.S.C. § 1030) "Exceeds authorized access" — read Van Buren v. United States (2021)
-🇺🇸 USA DMCA § 1201 Circumvention — mostly irrelevant here but active probes may touch it
-🇬🇧 UK Computer Misuse Act 1990 § 1 Unauthorized access
-🇪🇺 EU Directive 2013/40/EU Attacks against information systems
-🇩🇪 Germany StGB § 202a-c Data espionage, interception
-🇦🇺 Australia Criminal Code Act 1995, Part 10.7 Unauthorized access
-🇮🇳 India IT Act 2000, § 66 Unauthorized access
-
-Safe Harbor
-
-If you're a security researcher, get written authorization in advance. A typical scope-of-work document includes:
-
-1. Named targets (FQDNs, IP ranges)
-2. Explicit exclusion list (e.g., production billing)
-3. Time window
-4. Rate limits
-5. Test account credentials
-6. Emergency contact for P1 findings
-
-SILKFANG's --cookie, --bearer, -fs, and -cs flags exist precisely so you can stay inside the scope-of-work.
-
-Bug Bounty Programs
-
-Most programs allow scanning but forbid:
-
-· DoS / heavy fuzzing
-· Data exfiltration
-· Lateral movement
-· Automated exploitation
-· Submitting findings on other programs' targets (e.g., their CDN provider)
-
-SILKFANG respects these by default with per-host backoff. Still, always read the program rules.
-
-Responsible Disclosure
-
-If you find something:
-
-1. Don't exploit further than proving the finding.
-2. Document minimally — enough to reproduce, no PII.
-3. Report privately — email or program portal.
-4. Give reasonable time — 90 days is industry standard.
-5. Don't publicize until fixed or agreed.
-
-Ethical Use
-
-SILKFANG is a tool. Its ethics are the operator's. Every feature exists because the defensive world needs to know how to see itself. Every active probe exists because passive scanning alone leaves blind spots.
-
-Use it defensively. Use it with permission. Use it to make systems safer, not to cause harm.
+☐ v1.1 — Headless-browser fallback via Playwright for JS-rendered SPAs
+☐ v1.2 — Built-in OpenAPI / Swagger parser → auto-endpoint discovery
+☐ v1.3 — S3 / GCS / Azure bucket anonymous-access validation (opt-in --probe-cloud)
+☐ v1.4 — HTTP/2-only target support (curl_cffi already does it; exposing the flag)
+☐ v1.5 — Response-time-based blind-SQLi timing heuristic (very opt-in)
+☐ v1.6 — Interactive shell — drop into help, add <url>, skip <url>, show <type> mid-crawl
+☐ v1.7 — Plugin API for third-party extractors
+☐ v1.8 — Distributed crawling (Redis queue backend)
+☐ v2.0 — Web UI
 
 ---
 
-🛠️ Contributing
+Credits & Contact
 
-SILKFANG is a single-file tool by design. Contributions should preserve that.
+Author: SYLHETYHACKVENGER (THE-ERROR808)
+Project name: SILKFANG
+License: MIT
+Language: Python 3.9+
 
-Adding a Detector
+Built with
 
-1. Pick a category (SECRET, CORS, DNS, etc.).
-2. Add the regex or logic inside the relevant parser (extract_all, mine_js_deep, defensive_pass, analyze_postmessage, etc.).
-3. Emit with a new TYPE if needed (add to SEVERITY dict).
-4. Add a line to the Detection Catalog in this README.
-5. Test against --self-test and a real target you control.
-
-Example: adding a detector for AWS Secret Access Key (not just key ID):
-
-```python
-# In SECRET_PATTERNS
-(r'\b[A-Za-z0-9/+=]{40}\b', "AWS-SECRET-CANDIDATE"),
-
-# In mine_js_deep, after finding AWS-KEY, correlate:
-for m in re.finditer(r'AKIA[0-9A-Z]{16}', text):
-    # look for 40-char base64 nearby
-    ...
-```
-
-Adding a Path
-
-Add to SENSITIVE_PATHS. If it's a high-risk path (would-be critical if reachable), also add to HIGH_RISK_SENSITIVE.
-
-Adding a Subdomain Takeover Provider
-
-1. Add fingerprint to TAKEOVER_FINGERPRINTS[<provider>].
-2. Add CNAME hints to TAKEOVER_CNAME_HINTS[<provider>].
-
-Style Guidelines
-
-· Async — any network I/O must be await
-· No blocking in the loop — use asyncio.to_thread for sync libs (PIL, pypdf)
-· Emit early, emit often — stream findings, don't batch
-· One .py file — no modules, no packages
-· All deps optional — every import must be guarded by try/except ImportError
-· Preserve backwards compat — don't rename existing TYPE strings
-
-Testing Checklist
-
-☐ python3 silkfang.py --self-test returns {"ok": true, ...}
-☐ Runs on a target you own in all 3 modes
-☐ --passive skips active probes (verify with tcpdump)
-☐ --resume after Ctrl-C continues correctly
-☐ --jsonl --silent -q produces valid JSON-lines
-☐ --sarif produces valid SARIF (validate via cat output/*.sarif | jq .version)
-☐ No new required dependencies
-
-Reporting Bugs
-
-Include:
-
-1. OS + Python version
-2. pip freeze for the relevant packages
-3. The exact command
-4. The first 20 lines of output
-5. (redacted) output/<target>-<mode>.txt if possible
-
-Reporting Security Issues in SILKFANG Itself
-
-Email security@<author domain> with subject SILKFANG: <one-line summary>. PGP key on request.
-
----
-
-🙏 Credits
-
-Author
-
-SYLHETYHACKVENGER — THE-ERROR808
-· GitHub: @sylhetyhackvenger
-
-Built With
-
-· Beautiful Soup — HTML parsing
-· lxml — fast parser backend
-· tldextract — public suffix list
-· Rich — terminal rendering
-· curl_cffi — TLS impersonation
-· httpx — HTTP client fallback
-· dnspython — DNS queries
-· esprima — JS AST
-· Pillow — image processing
+· curl_cffi — TLS fingerprint impersonation, the single most important dependency for effective web reconnaissance against modern WAFs.
+· httpx — HTTP fallback
+· BeautifulSoup + lxml — HTML parsing
+· tldextract — registered-domain extraction
+· rich — terminal UI
+· esprima-python — JavaScript AST
+· dnspython — DNS
+· Pillow — image EXIF
 · pypdf — PDF parsing
-· fontTools — font parsing
+· fonttools — font metadata
 · ipwhois — RDAP lookups
-· uvloop — fast event loop
+· uvloop — event loop
 
-Inspired By
+Signature data derived from
 
-· ProjectDiscovery — subfinder, httpx, nuclei, katana
-· TomNomNom — waybackurls, gau, assetfinder
-· trufflesecurity — trufflehog
-· The Bug Bounty Community — every person who shared a technique
+· crt.sh certificate transparency
+· HackerTarget hostsearch
+· RapidDNS
+· AlienVault OTX passive DNS
+· ProjectDiscovery's nuclei-template conventions
+· Common community knowledge on subdomain takeover fingerprints
 
-Attribution
+Special thanks
 
-Algorithms and detection ideas are drawn from public research and CTF write-ups. Where a specific technique has a clear originator, it should be cited in the commit message.
+The gray-hat community that quietly maintains the fingerprint tables, the WAF signatures, and the takeover-proof strings that make tools like this possible. Without you, everything here would be Server: nginx and hope.
+
+---
+
+Final Word
+
+"The best reconnaissance is the kind that discovers what nobody else bothered to look at."
+
+SILKFANG exists because the gap between "I know how to read HTML" and "I can enumerate an entire attack surface" is wider than most people realize. The tool is fast, honest, and — most importantly — it tells you exactly what it found, exactly where it found it, and exactly why it thinks it matters.
+
+If it saves you one hour on one engagement, it was worth building.
+
+Use it well. Use it lawfully. And when you find something interesting, disclose it responsibly.
 
 ---
 
 <div align="center">
 
-📜 License
+SILKFANG · Website Recon Engine & A Powerful Crawler
 
-This tool is provided for educational and authorized security testing purposes only.
+Made by SYLHETYHACKVENGER (THE-ERROR808)
 
-Usage constitutes acceptance of the full disclaimer at the top of this README. The author is not responsible for misuse. This is not a product — it is a security research tool released to the community in the spirit of the hacker ethic.
-
----
-
-⬆ Back to Top
-
-Built with paranoia. Deployed with permission. Reported responsibly.
-
-```
-  ███████╗██╗██╗     ██╗  ██╗███████╗ █████╗ ███╗   ██╗ ██████╗
-  ██╔════╝██║██║     ██║ ██╔╝██╔════╝██╔══██╗████╗  ██║██╔════╝
-  ███████╗██║██║     █████╔╝ █████╗  ███████║██╔██╗ ██║██║  ███╗
-  ╚════██║██║██║     ██╔═██╗ ██╔══╝  ██╔══██║██║╚██╗██║██║   ██║
-  ███████║██║███████╗██║  ██╗██║     ██║  ██║██║ ╚████║╚██████╔╝
-  ╚══════╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝
-```
-
-SILKFANG · SYLHETYHACKVENGER (THE-ERROR808) · Live Streaming Recon Engine
+If this tool helped you, star the repo. If it found something critical, buy me a coffee.
 
 </div>
