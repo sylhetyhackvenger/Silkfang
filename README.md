@@ -1,5 +1,7 @@
+<p align="center">
+  <img src="assets/1.png" alt="Banner 1" width="100%">
+</p>
 
-<div align="center">
   
 # Website Recon Engine & A Powerful Crawler
 attack-surface intelligence for gray-hat operators
@@ -319,6 +321,11 @@ Architecture Diagram
 
 ---
 
+<p align="center">
+  <img src="assets/2.png" alt="Banner 2" width="100%">
+</p>
+<div align="center">
+  
 Quick Start
 
 ```bash
