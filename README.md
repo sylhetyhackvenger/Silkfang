@@ -117,7 +117,7 @@ Every emit is timestamped, deduplicated, and severity-coloured. You watch the at
 If you Ctrl-C, a checkpoint is saved. --resume continues from exactly where you stopped — visited URLs, discovered assets, and prior findings all restored.
 
 ---
-
+![SILKFANG Live Recon](assets/silkfang-live.svg)
 Feature Matrix — The Complete Breakdown
 
 | Domain | Capability | Category |
