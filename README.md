@@ -2,7 +2,6 @@
   <img src="assets/1.png" alt="Banner 1" width="100%">
 </p>
 
-  
 # Website Recon Engine & A Powerful Crawler ● attack-surface intelligence for gray-hat operators
 
 <div align="center">
@@ -25,10 +24,6 @@
 </div>
 
 **`SILENT. SHARP. PRECISE.`**
-
-</div>
-
-</div>
 
 ---
 
@@ -125,166 +120,168 @@ If you Ctrl-C, a checkpoint is saved. --resume continues from exactly where you 
 
 Feature Matrix — The Complete Breakdown
 
-Domain Capability Category
-HTTP Full crawl with custom User-Agent rotation Core
-HTTP Per-host jittered rate limiting + exponential backoff Core
-HTTP Redirect chain capture and analysis Core
-HTTP Retry with staggered delay on 429/503 Core
-HTTP Bot challenge detection (Cloudflare, DataDome, Akamai, Kasada, PerimeterX) Active
-HTML Full link extraction from <a>, <form>, <link>, <script>, <iframe>, <img>, <video>, <audio>, <source>, <track>, <embed>, <object>, <use>, <image>, <base> Core
-HTML data-* attribute mining (data-href, data-url, data-endpoint, …) Core
-HTML JSON-LD schema.org extraction Core
-HTML Microdata (itemprop) extraction Core
-HTML OpenGraph and Twitter card extraction Core
-HTML Generator meta, viewport, canonical, hreflang, pagination rels Core
-HTML Meta refresh target discovery Core
-HTML HTML comment mining for TODO, FIXME, password, secret, admin, api_key, xss, sqli, bypass, auth, credential, aws, gcp, azure, salt, hash, jwt, oauth, pem, keystore, htpasswd, shadow, sudo, root Passive
-HTML Inline <script> and <style> harvesting Core
-HTML Deep-link protocol extraction (whatsapp://, intent://, tg://, viber://, …) Passive
-HTML Form method/action/enctype/CSRF audit Defensive
-HTML Hidden input extraction Passive
-HTML SVG embedded-script detection Passive
-HTML <noscript> fallback extraction Core
-CSS url() and @import extraction Core
-CSS Font-file discovery Core
-CSS CSS source-map detection Active
-JS Full ESprima AST parse (falls back to regex on parse failure) Active
-JS Template literal endpoint extraction Active
-JS Dynamic import / require resolution Active
-JS Source map discovery + fetch hint Active
-JS WebSocket URL extraction Active
-JS postMessage origin-check audit Active
-JS Wildcard postMessage target audit Active
-JS DOM-XSS source/sink correlation Active
-JS Prototype-pollution detection in __proto__-merge patterns Active
-JS Sensitive localStorage/sessionStorage key detection Active
-JS fetch/axios endpoint extraction Active
-JS JWT audit (alg=none, jku, jwk, kid injection, missing exp) Active
-JS HS256 JWT offline cracking against wordlist Active
-JSON Recursive key mining for token, api_key, secret, password, private_key, aws_access_key_id, client_secret, … Active
-JSON Nested endpoint URL extraction Active
-Secrets 40+ signature classes (AWS, GCP, Stripe, Slack, GitHub, GitLab, Twilio, SendGrid, Mailgun, HuggingFace, OpenAI, Anthropic, Cohere, Groq, Perplexity, Replicate, Cloudinary, DigitalOcean, Alibaba, Discord, Telegram, Clerk, Supabase, Vercel, Netlify, Fly, Railway, Render, Datadog, PagerDuty, Opsgenie, Linear, Notion, Airtable, Figma, Shopify, AssemblyAI, ElevenLabs, Deepgram, Mistral, XAI, OpenRouter, …) Active
-Secrets Shannon-entropy high-entropy-string detection Active
-Secrets Luhn-validated credit card detection Active
-Secrets IBAN detection with length validation Active
-Secrets SSN detection Active
-Secrets Private key / certificate PEM detection Active
-Cloud S3 bucket URL discovery Passive
-Cloud Azure Blob URL discovery Passive
-Cloud Google Cloud Storage bucket discovery Passive
-Cloud Firebase Storage / Realtime-DB discovery Passive
-Cloud Firebase apiKey+projectId correlation Passive
-Cloud Supabase instance + key detection Passive
-Cloud Cloudinary URL credential extraction Passive
-Auth Auth0 tenant + client_id correlation Passive
-Auth Okta tenant detection Passive
-Auth AWS Cognito pool detection Passive
-Auth Clerk instance detection Passive
-Auth OAuth client_id extraction Passive
-Auth Password reset token extraction Passive
-Auth CSRF token field detection Passive
-Payments Stripe publishable key extraction Passive
-Payments Stripe secret key detection Active
-Payments PayPal business email Passive
-Payments Square application ID Passive
-Payments Braintree tokenization key Passive
-Payments Adyen client key Passive
-Analytics GA-UA, GA4, GTM, FB Pixel, Hotjar, Segment, Amplitude, Mixpanel, PostHog, Plausible, Matomo, Umami, Clarity, Heap, RudderStack, mParticle, Tealium Passive
-Analytics Segment write key detection Active
-Error Tracking Sentry, Datadog RUM, New Relic, Rollbar, Honeybadger, Bugsnag, Raygun, LogRocket, FullStory Passive
-Chat Intercom, Drift, Crisp, Zendesk Passive
-Maps Mapbox (pk/sk), Google Maps, Here Passive
-Realtime Pusher, PubNub, Ably Passive
-Search Algolia appId+apiKey, Typesense, MeiliSearch Passive
-Feature Flags LaunchDarkly client-side ID, Optimizely project ID Passive
-Consent OneTrust, Cookiebot Passive
-CAPTCHA reCAPTCHA, hCaptcha, Cloudflare Turnstile site keys Passive
-Crypto BTC, ETH, XMR, LTC, DOGE, SOL address extraction Passive
-Hashes MD5, SHA1, SHA256, UUID, JWT discovery Passive
-Base64 Recursive base64 payload unwrapping Passive
-Contact Email, phone, mailto:, tel:, sms: extraction Passive
-Library 35+ JS library version extraction (jQuery, Bootstrap, React, Vue, Angular, Svelte, D3, Chart.js, GSAP, Lodash, Moment, Day.js, Three.js, Alpine, HTMX, Axios, Socket.io, Handlebars, Mustache, RequireJS, Modernizr, Popper, Ember, Backbone, Knockout, Underscore, Foundation, Bulma, Tailwind, jQuery-UI, jQuery-Mobile, Vuex, React-DOM, Redux) Passive
-SRI Missing integrity= on external scripts/styles Passive
-Headers 30+ security header audit (HSTS, CSP, XFO, XCTO, Referrer, Permissions-Policy, COOP, COEP, CORP, X-XSS, …) Defensive
-Headers HSTS max-age weakness, preload, includeSubDomains Defensive
-Headers CSP unsafe-inline, unsafe-eval, wildcard, report-uri extraction Defensive
-Headers Server version leakage (Server, X-Powered-By, X-AspNet-Version, X-Generator, X-Git-Commit, X-Env, X-Pod, X-Namespace, …) Passive
-Headers Trace headers (X-Request-ID, X-Correlation-ID, W3C Traceparent, B3) Passive
-Headers Edge/CDN headers (CF-Ray, X-Cache, X-Served-By, X-Varnish, X-Akamai) Passive
-CORS Wildcard ACAO detection Defensive
-CORS Credentials + wildcard detection Active
-CORS Origin reflection probe with evil.example.com Active
-CORS Null-origin acceptance probe Active
-CORS Preflight method/header disclosure Defensive
-Cookies Secure, HttpOnly, SameSite, domain, path, __Host-/__Secure- prefix audit Defensive
-Cookies JWT-in-cookie audit Active
-Cookies Base64 JSON payload detection Active
-TLS Protocol version, cipher suite, issuer, subject, expiry, SANs Passive
-WAF 25+ WAF product fingerprints (Cloudflare, Akamai, Incapsula, Sucuri, CloudFront, AWS WAF, Fastly, F5 BIG-IP, Barracuda, ModSecurity, Imperva, DDoS-Guard, FortiWeb, Citrix NetScaler, Radware, Wallarm, Signal Sciences, Rapid7, StackPath, KeyCDN, BunnyCDN, Gcore, Qrator, Vercel, Netlify, Deno Deploy, Cloudflare Workers, Fastly Compute) Active
-DNS A, AAAA, NS, MX, TXT, SRV, CAA, DNSKEY, SOA, PTR, TLSA, SSHFP, NAPTR Passive
-DNS DMARC, SPF, DKIM (default/google/selector1/selector2/k1) Passive
-DNS MTA-STS, SMTP TLS, BIMI Passive
-DNS ACME challenge TXT, DNSLink, GitHub Pages challenge Passive
-DNS AXFR zone-transfer attempt Active
-DNS Reverse PTR, RDAP ASN + organization Passive
-Subdomains crt.sh certificate transparency aggregation Passive
-Subdomains HackerTarget host-search API Passive
-Subdomains RapidDNS aggregation Passive
-Subdomains AlienVault OTX passive DNS Passive
-Subdomains CNAME-resolved takeover fingerprinting (60+ providers) Active
-Subdomains Dangling CNAME detection Active
-Probes OPTIONS method discovery + TRACE XST Active
-Probes Risky method enumeration (PUT, DELETE, PATCH, PROPFIND, …) Active
-Probes Open-redirect injection across 20+ common parameters Active
-Probes Cache-poisoning via X-Forwarded-* / X-Original-URL / Forwarded Active
-Probes Web cache deception via appended static extensions Active
-Probes HTTP method override via X-HTTP-Method-Override Active
-Probes FAT-GET (GET-with-body) behavior detection Active
-Probes GraphQL introspection across 12 common endpoint paths Active
-Probes Path brute-force across 200+ common paths Active
-Probes Sensitive path enumeration (.env, .git, wp-config, Dockerfile, package.json, actuator/*, phpinfo, backups, …) Active
-Discovery robots.txt parsing + Allow/Disallow + Sitemap Passive
-Discovery Sitemap recursion (up to 100k URLs) Passive
-Discovery security.txt parsing Passive
-Discovery humans.txt, ads.txt, app-ads.txt Passive
-Discovery PWA manifest discovery Passive
-Discovery RSS, Atom, feed discovery Passive
-Discovery Changelog, README, LICENSE, SECURITY.md discovery Passive
-Discovery Favicon hash (Shodan-compatible MD5) Passive
-Discovery Pagination detection (page, p, offset, cursor, after, before, …) Core
-Assets EXIF GPS + Make/Model/Software/SerialNumber extraction Active
-Assets PDF metadata (Author, Creator, Producer, Title, Subject, Keywords, CreationDate, ModDate, Trapped) + page count Active
-Assets Office (docx/xlsx/pptx/odt/ods/odp/epub) core.xml metadata Active
-Assets ZIP/TAR archive entry listing Active
-Assets SVG embedded-script / xlink-href extraction Active
-Assets Font metadata (name table IDs 1–20) Active
-Analysis IDOR candidate detection from numeric/UUID param sequences Passive
-Analysis Parameter wordlist building Core
-Analysis Internal ID attribute extraction Passive
-Analysis Internal IP address detection (RFC1918) Passive
-Analysis Dev-banner detection (lorem ipsum, coming soon, staging, beta) Passive
-Analysis GraphQL endpoint URL extraction Passive
-Reporting Live coloured streaming to terminal Core
-Reporting JSONL streaming for SIEM ingestion Core
-Reporting Deduplication of every emit Core
-Reporting Severity classification (critical/high/medium/low/info) Core
-Reporting Per-run text file output Core
-Reporting SARIF 2.1.0 export Core
-Reporting Baseline diffing Core
-Reporting Resume checkpoints (JSONL) Core
-Stealth 60+ User-Agent rotation Core
-Stealth Accept-header variant rotation Core
-Stealth Accept-Language rotation Core
-Stealth Sec-CH-UA variant rotation Core
-Stealth Referer construction Core
-Stealth curl_cffi TLS impersonation (Chrome 120) Core
-Stealth Per-host exponential backoff Core
-Stealth Per-host jittered spacing Core
-Stealth Graceful SIGINT/SIGTERM shutdown Core
+| Domain | Capability | Category |
+|---|---|---|
+| HTTP | Full crawl with custom User-Agent rotation | Core |
+| HTTP | Per-host jittered rate limiting + exponential backoff | Core |
+| HTTP | Redirect chain capture and analysis | Core |
+| HTTP | Retry with staggered delay on 429/503 | Core |
+| HTTP | Bot challenge detection (Cloudflare, DataDome, Akamai, Kasada, PerimeterX) | Active |
+| HTML | Full link extraction from `<a>`, `<form>`, `<link>`, `<script>`, `<iframe>`, `<img>`, `<video>`, `<audio>`, `<source>`, `<track>`, `<embed>`, `<object>`, `<use>`, `<image>`, `<base>` | Core |
+| HTML | data-* attribute mining (data-href, data-url, data-endpoint, …) | Core |
+| HTML | JSON-LD schema.org extraction | Core |
+| HTML | Microdata (itemprop) extraction | Core |
+| HTML | OpenGraph and Twitter card extraction | Core |
+| HTML | Generator meta, viewport, canonical, hreflang, pagination rels | Core |
+| HTML | Meta refresh target discovery | Core |
+| HTML | HTML comment mining for TODO, FIXME, password, secret, admin, api_key, xss, sqli, bypass, auth, credential, aws, gcp, azure, salt, hash, jwt, oauth, pem, keystore, htpasswd, shadow, sudo, root | Passive |
+| HTML | Inline `<script>` and `<style>` harvesting | Core |
+| HTML | Deep-link protocol extraction (whatsapp://, intent://, tg://, viber://, …) | Passive |
+| HTML | Form method/action/enctype/CSRF audit | Defensive |
+| HTML | Hidden input extraction | Passive |
+| HTML | SVG embedded-script detection | Passive |
+| HTML | `<noscript>` fallback extraction | Core |
+| CSS | url() and @import extraction | Core |
+| CSS | Font-file discovery | Core |
+| CSS | CSS source-map detection | Active |
+| JS | Full ESprima AST parse (falls back to regex on parse failure) | Active |
+| JS | Template literal endpoint extraction | Active |
+| JS | Dynamic import / require resolution | Active |
+| JS | Source map discovery + fetch hint | Active |
+| JS | WebSocket URL extraction | Active |
+| JS | postMessage origin-check audit | Active |
+| JS | Wildcard postMessage target audit | Active |
+| JS | DOM-XSS source/sink correlation | Active |
+| JS | Prototype-pollution detection in `__proto__`-merge patterns | Active |
+| JS | Sensitive localStorage/sessionStorage key detection | Active |
+| JS | fetch/axios endpoint extraction | Active |
+| JS | JWT audit (alg=none, jku, jwk, kid injection, missing exp) | Active |
+| JS | HS256 JWT offline cracking against wordlist | Active |
+| JSON | Recursive key mining for token, api_key, secret, password, private_key, aws_access_key_id, client_secret, … | Active |
+| JSON | Nested endpoint URL extraction | Active |
+| Secrets | 40+ signature classes (AWS, GCP, Stripe, Slack, GitHub, GitLab, Twilio, SendGrid, Mailgun, HuggingFace, OpenAI, Anthropic, Cohere, Groq, Perplexity, Replicate, Cloudinary, DigitalOcean, Alibaba, Discord, Telegram, Clerk, Supabase, Vercel, Netlify, Fly, Railway, Render, Datadog, PagerDuty, Opsgenie, Linear, Notion, Airtable, Figma, Shopify, AssemblyAI, ElevenLabs, Deepgram, Mistral, XAI, OpenRouter, …) | Active |
+| Secrets | Shannon-entropy high-entropy-string detection | Active |
+| Secrets | Luhn-validated credit card detection | Active |
+| Secrets | IBAN detection with length validation | Active |
+| Secrets | SSN detection | Active |
+| Secrets | Private key / certificate PEM detection | Active |
+| Cloud | S3 bucket URL discovery | Passive |
+| Cloud | Azure Blob URL discovery | Passive |
+| Cloud | Google Cloud Storage bucket discovery | Passive |
+| Cloud | Firebase Storage / Realtime-DB discovery | Passive |
+| Cloud | Firebase apiKey+projectId correlation | Passive |
+| Cloud | Supabase instance + key detection | Passive |
+| Cloud | Cloudinary URL credential extraction | Passive |
+| Auth | Auth0 tenant + client_id correlation | Passive |
+| Auth | Okta tenant detection | Passive |
+| Auth | AWS Cognito pool detection | Passive |
+| Auth | Clerk instance detection | Passive |
+| Auth | OAuth client_id extraction | Passive |
+| Auth | Password reset token extraction | Passive |
+| Auth | CSRF token field detection | Passive |
+| Payments | Stripe publishable key extraction | Passive |
+| Payments | Stripe secret key detection | Active |
+| Payments | PayPal business email | Passive |
+| Payments | Square application ID | Passive |
+| Payments | Braintree tokenization key | Passive |
+| Payments | Adyen client key | Passive |
+| Analytics | GA-UA, GA4, GTM, FB Pixel, Hotjar, Segment, Amplitude, Mixpanel, PostHog, Plausible, Matomo, Umami, Clarity, Heap, RudderStack, mParticle, Tealium | Passive |
+| Analytics | Segment write key detection | Active |
+| Error Tracking | Sentry, Datadog RUM, New Relic, Rollbar, Honeybadger, Bugsnag, Raygun, LogRocket, FullStory | Passive |
+| Chat | Intercom, Drift, Crisp, Zendesk | Passive |
+| Maps | Mapbox (pk/sk), Google Maps, Here | Passive |
+| Realtime | Pusher, PubNub, Ably | Passive |
+| Search | Algolia appId+apiKey, Typesense, MeiliSearch | Passive |
+| Feature Flags | LaunchDarkly client-side ID, Optimizely project ID | Passive |
+| Consent | OneTrust, Cookiebot | Passive |
+| CAPTCHA | reCAPTCHA, hCaptcha, Cloudflare Turnstile site keys | Passive |
+| Crypto | BTC, ETH, XMR, LTC, DOGE, SOL address extraction | Passive |
+| Hashes | MD5, SHA1, SHA256, UUID, JWT discovery | Passive |
+| Base64 | Recursive base64 payload unwrapping | Passive |
+| Contact | Email, phone, mailto:, tel:, sms: extraction | Passive |
+| Library | 35+ JS library version extraction (jQuery, Bootstrap, React, Vue, Angular, Svelte, D3, Chart.js, GSAP, Lodash, Moment, Day.js, Three.js, Alpine, HTMX, Axios, Socket.io, Handlebars, Mustache, RequireJS, Modernizr, Popper, Ember, Backbone, Knockout, Underscore, Foundation, Bulma, Tailwind, jQuery-UI, jQuery-Mobile, Vuex, React-DOM, Redux) | Passive |
+| SRI | Missing `integrity=` on external scripts/styles | Passive |
+| Headers | 30+ security header audit (HSTS, CSP, XFO, XCTO, Referrer, Permissions-Policy, COOP, COEP, CORP, X-XSS, …) | Defensive |
+| Headers | HSTS max-age weakness, preload, includeSubDomains | Defensive |
+| Headers | CSP unsafe-inline, unsafe-eval, wildcard, report-uri extraction | Defensive |
+| Headers | Server version leakage (Server, X-Powered-By, X-AspNet-Version, X-Generator, X-Git-Commit, X-Env, X-Pod, X-Namespace, …) | Passive |
+| Headers | Trace headers (X-Request-ID, X-Correlation-ID, W3C Traceparent, B3) | Passive |
+| Headers | Edge/CDN headers (CF-Ray, X-Cache, X-Served-By, X-Varnish, X-Akamai) | Passive |
+| CORS | Wildcard ACAO detection | Defensive |
+| CORS | Credentials + wildcard detection | Active |
+| CORS | Origin reflection probe with evil.example.com | Active |
+| CORS | Null-origin acceptance probe | Active |
+| CORS | Preflight method/header disclosure | Defensive |
+| Cookies | Secure, HttpOnly, SameSite, domain, path, `__Host-`/`__Secure-` prefix audit | Defensive |
+| Cookies | JWT-in-cookie audit | Active |
+| Cookies | Base64 JSON payload detection | Active |
+| TLS | Protocol version, cipher suite, issuer, subject, expiry, SANs | Passive |
+| WAF | 25+ WAF product fingerprints (Cloudflare, Akamai, Incapsula, Sucuri, CloudFront, AWS WAF, Fastly, F5 BIG-IP, Barracuda, ModSecurity, Imperva, DDoS-Guard, FortiWeb, Citrix NetScaler, Radware, Wallarm, Signal Sciences, Rapid7, StackPath, KeyCDN, BunnyCDN, Gcore, Qrator, Vercel, Netlify, Deno Deploy, Cloudflare Workers, Fastly Compute) | Active |
+| DNS | A, AAAA, NS, MX, TXT, SRV, CAA, DNSKEY, SOA, PTR, TLSA, SSHFP, NAPTR | Passive |
+| DNS | DMARC, SPF, DKIM (default/google/selector1/selector2/k1) | Passive |
+| DNS | MTA-STS, SMTP TLS, BIMI | Passive |
+| DNS | ACME challenge TXT, DNSLink, GitHub Pages challenge | Passive |
+| DNS | AXFR zone-transfer attempt | Active |
+| DNS | Reverse PTR, RDAP ASN + organization | Passive |
+| Subdomains | crt.sh certificate transparency aggregation | Passive |
+| Subdomains | HackerTarget host-search API | Passive |
+| Subdomains | RapidDNS aggregation | Passive |
+| Subdomains | AlienVault OTX passive DNS | Passive |
+| Subdomains | CNAME-resolved takeover fingerprinting (60+ providers) | Active |
+| Subdomains | Dangling CNAME detection | Active |
+| Probes | OPTIONS method discovery + TRACE XST | Active |
+| Probes | Risky method enumeration (PUT, DELETE, PATCH, PROPFIND, …) | Active |
+| Probes | Open-redirect injection across 20+ common parameters | Active |
+| Probes | Cache-poisoning via X-Forwarded-* / X-Original-URL / Forwarded | Active |
+| Probes | Web cache deception via appended static extensions | Active |
+| Probes | HTTP method override via X-HTTP-Method-Override | Active |
+| Probes | FAT-GET (GET-with-body) behavior detection | Active |
+| Probes | GraphQL introspection across 12 common endpoint paths | Active |
+| Probes | Path brute-force across 200+ common paths | Active |
+| Probes | Sensitive path enumeration (.env, .git, wp-config, Dockerfile, package.json, actuator/*, phpinfo, backups, …) | Active |
+| Discovery | robots.txt parsing + Allow/Disallow + Sitemap | Passive |
+| Discovery | Sitemap recursion (up to 100k URLs) | Passive |
+| Discovery | security.txt parsing | Passive |
+| Discovery | humans.txt, ads.txt, app-ads.txt | Passive |
+| Discovery | PWA manifest discovery | Passive |
+| Discovery | RSS, Atom, feed discovery | Passive |
+| Discovery | Changelog, README, LICENSE, SECURITY.md discovery | Passive |
+| Discovery | Favicon hash (Shodan-compatible MD5) | Passive |
+| Discovery | Pagination detection (page, p, offset, cursor, after, before, …) | Core |
+| Assets | EXIF GPS + Make/Model/Software/SerialNumber extraction | Active |
+| Assets | PDF metadata (Author, Creator, Producer, Title, Subject, Keywords, CreationDate, ModDate, Trapped) + page count | Active |
+| Assets | Office (docx/xlsx/pptx/odt/ods/odp/epub) core.xml metadata | Active |
+| Assets | ZIP/TAR archive entry listing | Active |
+| Assets | SVG embedded-script / xlink-href extraction | Active |
+| Assets | Font metadata (name table IDs 1–20) | Active |
+| Analysis | IDOR candidate detection from numeric/UUID param sequences | Passive |
+| Analysis | Parameter wordlist building | Core |
+| Analysis | Internal ID attribute extraction | Passive |
+| Analysis | Internal IP address detection (RFC1918) | Passive |
+| Analysis | Dev-banner detection (lorem ipsum, coming soon, staging, beta) | Passive |
+| Analysis | GraphQL endpoint URL extraction | Passive |
+| Reporting | Live coloured streaming to terminal | Core |
+| Reporting | JSONL streaming for SIEM ingestion | Core |
+| Reporting | Deduplication of every emit | Core |
+| Reporting | Severity classification (critical/high/medium/low/info) | Core |
+| Reporting | Per-run text file output | Core |
+| Reporting | SARIF 2.1.0 export | Core |
+| Reporting | Baseline diffing | Core |
+| Reporting | Resume checkpoints (JSONL) | Core |
+| Stealth | 60+ User-Agent rotation | Core |
+| Stealth | Accept-header variant rotation | Core |
+| Stealth | Accept-Language rotation | Core |
+| Stealth | Sec-CH-UA variant rotation | Core |
+| Stealth | Referer construction | Core |
+| Stealth | curl_cffi TLS impersonation (Chrome 120) | Core |
+| Stealth | Per-host exponential backoff | Core |
+| Stealth | Per-host jittered spacing | Core |
+| Stealth | Graceful SIGINT/SIGTERM shutdown | Core |
 
 ---
 
 Architecture Diagram
+
 
 ```
                     ┌────────────────────────────────┐
