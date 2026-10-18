@@ -1,0 +1,33 @@
+# ============================================================
+# SILKFANG — Website Recon Engine & A Powerful Crawler
+# Author: SYLHETYHACKVENGER (THE-ERROR808)
+# Python: 3.9+
+# ============================================================
+
+# ---------- CORE (required) ----------
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+tldextract>=5.1.0
+rich>=13.7.0
+
+# ---------- HTTP FETCHING (at least one required) ----------
+# curl_cffi is STRONGLY recommended — provides Chrome TLS impersonation
+curl-cffi>=0.6.2
+httpx>=0.27.0
+
+# ---------- PERFORMANCE (optional, Linux/macOS only) ----------
+uvloop>=0.19.0; sys_platform != "win32"
+
+# ---------- JAVASCRIPT AST (optional — regex fallback if absent) ----------
+esprima>=4.0.1
+
+# ---------- DNS (optional — enables full DNS/AXFR/takeover checks) ----------
+dnspython>=2.4.0
+
+# ---------- ASSET ANALYSIS (optional — enables --deep-assets) ----------
+Pillow>=10.0.0
+pypdf>=3.17.0
+fonttools>=4.47.0
+
+# ---------- ASN / RDAP LOOKUP (optional) ----------
+ipwhois>=1.2.0
