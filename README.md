@@ -1,7 +1,7 @@
 
 <div align="center">
 
-# Live Streaming Recon Engine & a powerful sites crawler
+# Website Recon Engine & A Powerful Crawler
 
 Attack Surface Mapping · Secret Mining · Passive & Active Recon · Real-Time Streaming
 
