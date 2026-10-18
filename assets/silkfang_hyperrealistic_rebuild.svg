@@ -1,0 +1,284 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">SILKFANG — Autonomous Attack Surface Intelligence</title>
+  <desc id="desc">A cinematic, high-detail dark security operations interface with a realistic metallic spider at the center of a luminous web, connected asset nodes, restrained red and cyan lighting, and live telemetry panels. Visualization only; no network activity is performed.</desc>
+
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#11151c"/><stop offset=".42" stop-color="#07090e"/><stop offset="1" stop-color="#020306"/>
+    </linearGradient>
+    <radialGradient id="vignette">
+      <stop offset="0" stop-color="#151923" stop-opacity=".15"/><stop offset=".7" stop-color="#030407" stop-opacity=".2"/><stop offset="1" stop-color="#000" stop-opacity=".92"/>
+    </radialGradient>
+    <radialGradient id="redGlow">
+      <stop offset="0" stop-color="#ff2746" stop-opacity=".24"/><stop offset=".48" stop-color="#b60c2b" stop-opacity=".1"/><stop offset="1" stop-color="#b60c2b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blueGlow">
+      <stop offset="0" stop-color="#2fc8ef" stop-opacity=".16"/><stop offset="1" stop-color="#2fc8ef" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="metal" x1=".05" y1=".05" x2=".95" y2=".95">
+      <stop offset="0" stop-color="#a6b0bb"/><stop offset=".13" stop-color="#3a424c"/><stop offset=".28" stop-color="#11161d"/><stop offset=".48" stop-color="#4b535d"/><stop offset=".62" stop-color="#10141a"/><stop offset=".82" stop-color="#292f38"/><stop offset="1" stop-color="#080a0e"/>
+    </linearGradient>
+    <linearGradient id="abdomen" x1=".1" y1="0" x2=".85" y2="1">
+      <stop offset="0" stop-color="#59616c"/><stop offset=".12" stop-color="#222831"/><stop offset=".34" stop-color="#0a0c11"/><stop offset=".52" stop-color="#303741"/><stop offset=".72" stop-color="#080a0e"/><stop offset="1" stop-color="#171b22"/>
+    </linearGradient>
+    <linearGradient id="legMetal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a2abb5"/><stop offset=".2" stop-color="#424a54"/><stop offset=".42" stop-color="#090b0f"/><stop offset=".7" stop-color="#353c46"/><stop offset="1" stop-color="#050609"/>
+    </linearGradient>
+    <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6fe6ff" stop-opacity=".08"/><stop offset=".5" stop-color="#a8d9e7" stop-opacity=".66"/><stop offset="1" stop-color="#ff3651" stop-opacity=".38"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141922" stop-opacity=".94"/><stop offset="1" stop-color="#080a0f" stop-opacity=".96"/>
+    </linearGradient>
+    <linearGradient id="redLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff2447" stop-opacity="0"/><stop offset=".5" stop-color="#ff2447"/><stop offset="1" stop-color="#ff2447" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#90a5bd" stroke-opacity=".055" stroke-width="1"/>
+      <circle cx="0" cy="0" r="1.2" fill="#8fa3b9" fill-opacity=".13"/>
+    </pattern>
+    <pattern id="microgrid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M8 0H0V8" fill="none" stroke="#d2e1ef" stroke-opacity=".025" stroke-width=".5"/>
+    </pattern>
+    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+    <filter id="smallGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9" result="blur"/><feOffset dy="7" result="offset"/><feComponentTransfer><feFuncA type="linear" slope=".65"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="texture" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="17" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .1"/></feComponentTransfer>
+      <feBlend in="SourceGraphic" mode="soft-light"/>
+    </filter>
+    <clipPath id="screenClip"><rect width="1600" height="900" rx="18"/></clipPath>
+    <g id="node">
+      <circle r="12" fill="#071017" stroke="#5cdcf5" stroke-opacity=".5" stroke-width="1.2"/>
+      <circle r="6" fill="#39c8e7" fill-opacity=".15" stroke="#8cecff" stroke-width="1"/>
+      <circle r="2.2" fill="#d9fbff"/>
+      <circle r="18" fill="none" stroke="#40d6f4" stroke-opacity=".13"/>
+    </g>
+    <g id="tinyDot"><circle r="2" fill="#ff3d58"/><circle r="5" fill="#ff3d58" fill-opacity=".15"/></g>
+  </defs>
+
+  <g clip-path="url(#screenClip)">
+    <rect width="1600" height="900" fill="url(#background)"/>
+    <rect width="1600" height="900" fill="url(#grid)"/>
+    <rect width="1600" height="900" fill="url(#microgrid)"/>
+    <ellipse cx="815" cy="432" rx="620" ry="480" fill="url(#redGlow)"/>
+    <ellipse cx="1060" cy="410" rx="470" ry="380" fill="url(#blueGlow)"/>
+    <rect width="1600" height="900" fill="url(#vignette)"/>
+
+    <!-- Subtle perimeter instrumentation -->
+    <g fill="#6d7b8d" opacity=".42" font-family="monospace" font-size="10">
+      <text x="34" y="142">SYS / VISUAL TELEMETRY</text><text x="34" y="160">SESSION 0X-7C91</text>
+      <text x="1565" y="142" text-anchor="end">NODE CLUSTER: 08</text><text x="1565" y="160" text-anchor="end">LATENCY 018 ms</text>
+      <text x="34" y="858">VISUALIZATION MODE // NO LIVE NETWORK ACTIONS</text>
+      <text x="1565" y="858" text-anchor="end">SILKFANG SYSTEMS • BUILD 04.26</text>
+    </g>
+    <g stroke="#ff2849" stroke-opacity=".24" fill="none">
+      <path d="M28 188V174H42 M1558 174H1572V188 M28 820V834H42 M1558 834H1572V820" stroke-width="2"/>
+      <path d="M28 224H110 M1490 224H1572 M28 788H110 M1490 788H1572" stroke-width="1"/>
+    </g>
+
+    <!-- Header -->
+    <g font-family="Arial, Helvetica, sans-serif">
+      <text x="54" y="67" fill="#f0f4f8" font-size="31" font-weight="800" letter-spacing="4">SILK<tspan fill="#ff3150">FANG</tspan></text>
+      <text x="56" y="92" fill="#8390a1" font-family="monospace" font-size="10.5" letter-spacing="2.5">AUTONOMOUS ATTACK-SURFACE INTELLIGENCE</text>
+      <g transform="translate(1290 58)">
+        <circle cx="0" cy="0" r="4" fill="#55e0c0"/>
+        <circle cx="0" cy="0" r="9" fill="none" stroke="#55e0c0" stroke-opacity=".22"/>
+        <text x="17" y="4" fill="#b5c2ce" font-family="monospace" font-size="10" letter-spacing="1.5">SYSTEM NOMINAL</text>
+      </g>
+      <path d="M54 117H1546" stroke="#536070" stroke-opacity=".32"/>
+      <path d="M54 117H280" stroke="url(#redLine)" stroke-width="2"/>
+    </g>
+
+    <!-- Central volumetric web field -->
+    <g>
+      <circle cx="790" cy="465" r="325" fill="url(#redGlow)"/>
+      <circle cx="790" cy="465" r="278" fill="none" stroke="#7a8d9f" stroke-opacity=".09"/>
+      <circle cx="790" cy="465" r="235" fill="none" stroke="#7a8d9f" stroke-opacity=".08" stroke-dasharray="2 9"/>
+      <circle cx="790" cy="465" r="185" fill="none" stroke="#7a8d9f" stroke-opacity=".1"/>
+      <circle cx="790" cy="465" r="132" fill="none" stroke="#7a8d9f" stroke-opacity=".08" stroke-dasharray="1 6"/>
+      <g stroke="url(#silk)" fill="none" stroke-width="1.1">
+        <path d="M790 465L1100 465 M790 465L1009 684 M790 465L790 775 M790 465L571 684 M790 465L480 465 M790 465L571 246 M790 465L790 155 M790 465L1009 246"/>
+        <path d="M790 465L1040 340L1015 465L1040 590L915 715L790 740L665 715L540 590L515 465L540 340L665 215L790 190L915 215Z" stroke-opacity=".7"/>
+        <path d="M790 465L985 368L982 465L985 562L888 660L790 660L692 660L595 562L598 465L595 368L692 270L790 270L888 270Z" stroke-opacity=".66"/>
+        <path d="M790 465L930 410L930 465L930 520L845 605L790 605L735 605L650 520L650 465L650 410L735 325L790 325L845 325Z" stroke-opacity=".7"/>
+        <path d="M790 465L860 447L860 483L790 535L720 483L720 447Z" stroke-opacity=".65"/>
+        <path d="M790 155L790 775 M480 465H1100 M571 246L1009 684 M1009 246L571 684" stroke-opacity=".18" stroke-dasharray="3 8"/>
+      </g>
+      <!-- fine silk glints -->
+      <g fill="#d9f8ff" opacity=".7">
+        <circle cx="790" cy="190" r="1.5"/><circle cx="1040" cy="340" r="1.5"/><circle cx="1015" cy="465" r="1.5"/>
+        <circle cx="915" cy="715" r="1.5"/><circle cx="665" cy="715" r="1.5"/><circle cx="540" cy="340" r="1.5"/>
+        <circle cx="692" cy="270" r="1.2"/><circle cx="888" cy="660" r="1.2"/><circle cx="650" cy="465" r="1.2"/>
+      </g>
+    </g>
+
+    <!-- Asset nodes and fine connector lines -->
+    <g stroke="#51d9f1" stroke-opacity=".24" stroke-width="1" fill="none">
+      <path d="M1100 465H1174V355H1210 M1009 684H1110V670H1210 M790 775V760H690V735 M480 465H400V365H350 M571 246H470V260H350 M790 155V180H900V225 M1009 246H1120V260H1210"/>
+    </g>
+    <g>
+      <use xlink:href="#node" x="1100" y="465"/><use xlink:href="#node" x="1009" y="684"/>
+      <use xlink:href="#node" x="790" y="775"/><use xlink:href="#node" x="480" y="465"/>
+      <use xlink:href="#node" x="571" y="246"/><use xlink:href="#node" x="790" y="155"/>
+      <use xlink:href="#node" x="1009" y="246"/>
+    </g>
+    <g font-family="monospace" font-size="11" letter-spacing="1">
+      <text x="1121" y="449" fill="#d8e5ed">CLOUD EDGE</text><text x="1121" y="465" fill="#73899b" font-size="9">ASSET / 07</text>
+      <text x="1032" y="712" fill="#d8e5ed">IDENTITY GRAPH</text><text x="1032" y="728" fill="#73899b" font-size="9">ASSET / 06</text>
+      <text x="790" y="806" text-anchor="middle" fill="#d8e5ed">CONFIGURATION</text><text x="790" y="822" text-anchor="middle" fill="#73899b" font-size="9">ASSET / 05</text>
+      <text x="355" y="449" text-anchor="end" fill="#d8e5ed">WEB GATEWAY</text><text x="355" y="465" text-anchor="end" fill="#73899b" font-size="9">ASSET / 03</text>
+      <text x="443" y="232" text-anchor="end" fill="#d8e5ed">API SURFACE</text><text x="443" y="248" text-anchor="end" fill="#73899b" font-size="9">ASSET / 02</text>
+      <text x="790" y="137" text-anchor="middle" fill="#d8e5ed">ADMIN CONSOLE</text><text x="790" y="121" text-anchor="middle" fill="#73899b" font-size="9">ASSET / 01</text>
+      <text x="1128" y="232" fill="#d8e5ed">QUERY GRAPH</text><text x="1128" y="248" fill="#73899b" font-size="9">ASSET / 04</text>
+    </g>
+
+    <!-- Hyper-detailed mechanical arachnid -->
+    <g filter="url(#shadow)">
+      <!-- cast shadow beneath the body -->
+      <ellipse cx="790" cy="508" rx="104" ry="39" fill="#000" opacity=".62" filter="url(#softGlow)"/>
+      <!-- legs, layered for depth -->
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke="#05070a" stroke-width="19">
+          <path d="M757 454L708 424L659 372L604 354"/><path d="M749 470L688 471L632 504L587 536"/>
+          <path d="M759 488L720 526L692 583L645 613"/><path d="M777 500L765 548L777 605L753 644"/>
+          <path d="M823 454L872 424L921 372L976 354"/><path d="M831 470L892 471L948 504L993 536"/>
+          <path d="M821 488L860 526L888 583L935 613"/><path d="M803 500L815 548L803 605L827 644"/>
+        </g>
+        <g stroke="url(#legMetal)" stroke-width="13">
+          <path d="M757 454L708 424L659 372L604 354"/><path d="M749 470L688 471L632 504L587 536"/>
+          <path d="M759 488L720 526L692 583L645 613"/><path d="M777 500L765 548L777 605L753 644"/>
+          <path d="M823 454L872 424L921 372L976 354"/><path d="M831 470L892 471L948 504L993 536"/>
+          <path d="M821 488L860 526L888 583L935 613"/><path d="M803 500L815 548L803 605L827 644"/>
+        </g>
+        <g stroke="#c0cbd3" stroke-opacity=".48" stroke-width="1.6">
+          <path d="M757 450L708 420L659 368L604 350"/><path d="M749 466L688 467L632 500L587 532"/>
+          <path d="M759 484L720 522L692 579L645 609"/><path d="M777 496L765 544L777 601L753 640"/>
+          <path d="M823 450L872 420L921 368L976 350"/><path d="M831 466L892 467L948 500L993 532"/>
+          <path d="M821 484L860 522L888 579L935 609"/><path d="M803 496L815 544L803 601L827 640"/>
+        </g>
+        <g stroke="#111820" stroke-width="20">
+          <path d="M708 424L659 372 M688 471L632 504 M720 526L692 583 M765 548L777 605 M872 424L921 372 M892 471L948 504 M860 526L888 583 M815 548L803 605"/>
+        </g>
+        <g fill="url(#metal)" stroke="#7d8996" stroke-opacity=".55" stroke-width="1.2">
+          <ellipse cx="708" cy="424" rx="10" ry="13" transform="rotate(-42 708 424)"/><ellipse cx="659" cy="372" rx="8" ry="11" transform="rotate(-48 659 372)"/>
+          <ellipse cx="688" cy="471" rx="10" ry="13"/><ellipse cx="632" cy="504" rx="8" ry="11" transform="rotate(58 632 504)"/>
+          <ellipse cx="720" cy="526" rx="10" ry="13" transform="rotate(35 720 526)"/><ellipse cx="692" cy="583" rx="8" ry="11" transform="rotate(25 692 583)"/>
+          <ellipse cx="765" cy="548" rx="10" ry="13"/><ellipse cx="777" cy="605" rx="8" ry="11"/>
+          <ellipse cx="872" cy="424" rx="10" ry="13" transform="rotate(42 872 424)"/><ellipse cx="921" cy="372" rx="8" ry="11" transform="rotate(48 921 372)"/>
+          <ellipse cx="892" cy="471" rx="10" ry="13"/><ellipse cx="948" cy="504" rx="8" ry="11" transform="rotate(-58 948 504)"/>
+          <ellipse cx="860" cy="526" rx="10" ry="13" transform="rotate(-35 860 526)"/><ellipse cx="888" cy="583" rx="8" ry="11" transform="rotate(-25 888 583)"/>
+          <ellipse cx="815" cy="548" rx="10" ry="13"/><ellipse cx="803" cy="605" rx="8" ry="11"/>
+        </g>
+        <!-- red rim light on the legs -->
+        <g stroke="#ff2949" stroke-opacity=".52" stroke-width="2">
+          <path d="M756 452L708 422L659 370 M748 468L688 469L632 502 M758 486L720 524L692 581 M776 498L765 546"/>
+          <path d="M824 452L872 422L921 370 M832 468L892 469L948 502 M822 486L860 524L888 581 M804 498L815 546"/>
+        </g>
+      </g>
+
+      <!-- armored abdomen -->
+      <path d="M759 442C751 422 768 405 790 405C814 405 830 423 822 445L815 483C809 503 771 503 765 483Z" fill="url(#abdomen)" stroke="#75818d" stroke-opacity=".65" stroke-width="1.4"/>
+      <path d="M764 431C769 415 781 410 790 410C804 410 815 419 818 432C800 441 781 441 764 431Z" fill="#9aa7b3" opacity=".16"/>
+      <path d="M765 449C781 456 800 456 816 449 M766 466C781 473 800 473 815 466 M772 484C784 489 796 489 808 484" fill="none" stroke="#a7b4c0" stroke-opacity=".32" stroke-width="1.3"/>
+      <path d="M770 442L777 432L784 438L790 427L797 438L805 432L811 442" fill="none" stroke="#ff2d4c" stroke-opacity=".9" stroke-width="2"/>
+      <!-- cephalothorax shell -->
+      <path d="M764 449C761 433 770 420 790 418C810 420 819 433 816 449L808 466C799 476 781 476 772 466Z" fill="url(#metal)" stroke="#a1adb8" stroke-opacity=".65" stroke-width="1.5"/>
+      <path d="M771 443C776 428 804 428 809 443" fill="none" stroke="#d3dce4" stroke-opacity=".3" stroke-width="2"/>
+      <path d="M773 456L790 465L807 456" fill="none" stroke="#ff2c4a" stroke-opacity=".7" stroke-width="1.5"/>
+      <!-- eye cluster: small optics, not cartoon eyes -->
+      <g filter="url(#smallGlow)">
+        <circle cx="781" cy="445" r="3.2" fill="#ff2345"/><circle cx="790" cy="442" r="3.7" fill="#ff3551"/>
+        <circle cx="799" cy="445" r="3.2" fill="#ff2345"/>
+      </g>
+      <g fill="#f3f6f8" opacity=".85"><circle cx="780" cy="444" r=".8"/><circle cx="789" cy="441" r=".9"/><circle cx="798" cy="444" r=".8"/></g>
+      <!-- fangs and sensor palps -->
+      <path d="M780 462L775 474L784 468 M800 462L805 474L796 468" fill="none" stroke="#c4ced7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M780 463L778 470 M800 463L802 470" stroke="#ff304d" stroke-width="1.2"/>
+      <!-- fine machined vents and fasteners -->
+      <g stroke="#9aa6b2" stroke-opacity=".55" fill="#0b0e13">
+        <circle cx="768" cy="452" r="2"/><circle cx="812" cy="452" r="2"/>
+        <path d="M773 477l5 2 M802 479l5 -2 M778 488l4 1 M798 489l4 -1" stroke-width="1.3"/>
+      </g>
+    </g>
+
+    <!-- restrained data pulses, rendered as light streaks -->
+    <g fill="none" stroke-linecap="round">
+      <path d="M1100 465H1010" stroke="#ff3150" stroke-width="2" stroke-opacity=".8"/>
+      <path d="M1009 684L941 616" stroke="#ff3150" stroke-width="2" stroke-opacity=".6"/>
+      <path d="M790 775V678" stroke="#ff3150" stroke-width="2" stroke-opacity=".55"/>
+      <path d="M480 465H570" stroke="#ff3150" stroke-width="2" stroke-opacity=".55"/>
+      <path d="M571 246L640 315" stroke="#5ddcf4" stroke-width="2" stroke-opacity=".48"/>
+      <path d="M790 155V260" stroke="#5ddcf4" stroke-width="2" stroke-opacity=".42"/>
+      <path d="M1009 246L940 315" stroke="#5ddcf4" stroke-width="2" stroke-opacity=".48"/>
+    </g>
+    <g filter="url(#smallGlow)">
+      <use xlink:href="#tinyDot" x="1040" y="465"/><use xlink:href="#tinyDot" x="965" y="640"/>
+      <use xlink:href="#tinyDot" x="790" y="710"/><use xlink:href="#tinyDot" x="535" y="465"/>
+    </g>
+
+    <!-- Left: scan summary panel -->
+    <g transform="translate(54 250)">
+      <rect width="270" height="258" rx="5" fill="url(#panel)" stroke="#657383" stroke-opacity=".28"/>
+      <path d="M0 0H270" stroke="#ff3150" stroke-width="2"/>
+      <text x="18" y="28" fill="#e6edf3" font-family="monospace" font-size="11" letter-spacing="1.5">SURFACE OVERVIEW</text>
+      <text x="18" y="49" fill="#738397" font-family="monospace" font-size="9">AUTHORIZED SCOPE / DEMO ENVIRONMENT</text>
+      <path d="M18 65H252" stroke="#657383" stroke-opacity=".24"/>
+      <g font-family="monospace" font-size="10.5">
+        <text x="18" y="91" fill="#9ba8b7">Assets discovered</text><text x="250" y="91" text-anchor="end" fill="#f0f4f7">128</text>
+        <text x="18" y="120" fill="#9ba8b7">Services mapped</text><text x="250" y="120" text-anchor="end" fill="#f0f4f7">042</text>
+        <text x="18" y="149" fill="#9ba8b7">Exposed endpoints</text><text x="250" y="149" text-anchor="end" fill="#f0f4f7">016</text>
+        <text x="18" y="178" fill="#9ba8b7">Risk signals</text><text x="250" y="178" text-anchor="end" fill="#ff657a">03 elevated</text>
+      </g>
+      <path d="M18 195H252" stroke="#657383" stroke-opacity=".24"/>
+      <text x="18" y="216" fill="#738397" font-family="monospace" font-size="9">DISCOVERY COVERAGE</text>
+      <rect x="18" y="229" width="234" height="5" rx="2.5" fill="#202630"/>
+      <rect x="18" y="229" width="192" height="5" rx="2.5" fill="#ff3150"/>
+      <text x="252" y="249" text-anchor="end" fill="#b9c5d0" font-family="monospace" font-size="9">82%</text>
+    </g>
+
+    <!-- Right: telemetry panel -->
+    <g transform="translate(1240 276)">
+      <rect width="306" height="276" rx="5" fill="url(#panel)" stroke="#657383" stroke-opacity=".3"/>
+      <path d="M0 0H306" stroke="#4ed8ef" stroke-width="2"/>
+      <text x="18" y="28" fill="#e6edf3" font-family="monospace" font-size="11" letter-spacing="1.4">EVENT TELEMETRY</text>
+      <text x="18" y="48" fill="#738397" font-family="monospace" font-size="9">LOCAL VISUAL FEED / SIMULATED</text>
+      <path d="M18 63H288" stroke="#657383" stroke-opacity=".24"/>
+      <g font-family="monospace" font-size="9.5">
+        <circle cx="23" cy="86" r="3" fill="#54dfbd"/><text x="35" y="89" fill="#9fadb9">04:12:08</text><text x="112" y="89" fill="#d5dee6">Asset indexed</text>
+        <circle cx="23" cy="117" r="3" fill="#54dfbd"/><text x="35" y="120" fill="#9fadb9">04:12:11</text><text x="112" y="120" fill="#d5dee6">DNS relation found</text>
+        <circle cx="23" cy="148" r="3" fill="#ffbd59"/><text x="35" y="151" fill="#9fadb9">04:12:13</text><text x="112" y="151" fill="#d5dee6">Policy review flagged</text>
+        <circle cx="23" cy="179" r="3" fill="#54dfbd"/><text x="35" y="182" fill="#9fadb9">04:12:17</text><text x="112" y="182" fill="#d5dee6">TLS profile checked</text>
+        <circle cx="23" cy="210" r="3" fill="#4ed8ef"/><text x="35" y="213" fill="#9fadb9">04:12:19</text><text x="112" y="213" fill="#d5dee6">Graph updated</text>
+      </g>
+      <path d="M18 230H288" stroke="#657383" stroke-opacity=".24"/>
+      <text x="18" y="251" fill="#738397" font-family="monospace" font-size="9">PIPELINE STATUS</text>
+      <text x="288" y="251" text-anchor="end" fill="#54dfbd" font-family="monospace" font-size="9">OPERATIONAL</text>
+    </g>
+
+    <!-- Bottom status rail -->
+    <g>
+      <path d="M54 835H1546" stroke="#596676" stroke-opacity=".34"/>
+      <path d="M54 835H340" stroke="#ff3150" stroke-opacity=".7" stroke-width="1.5"/>
+      <g font-family="monospace" font-size="9.5" fill="#778698">
+        <text x="54" y="818">MODE <tspan fill="#c4ced8">SURFACE-MAP</tspan></text>
+        <text x="300" y="818">SCOPE <tspan fill="#c4ced8">LAB-ENVIRONMENT</tspan></text>
+        <text x="610" y="818">THREADS <tspan fill="#c4ced8">08</tspan></text>
+        <text x="790" y="818">INTEGRITY <tspan fill="#c4ced8">100%</tspan></text>
+        <text x="1010" y="818">FEED <tspan fill="#c4ced8">SIMULATED</tspan></text>
+        <text x="1546" y="818" text-anchor="end" fill="#54dfbd">● AUTHORIZED SCOPE ONLY</text>
+      </g>
+    </g>
+    <!-- Fine film grain overlay -->
+    <rect width="1600" height="900" fill="#fff" opacity=".018" filter="url(#texture)" pointer-events="none"/>
+    <rect x="1" y="1" width="1598" height="898" rx="17" fill="none" stroke="#657383" stroke-opacity=".45" stroke-width="1.5"/>
+  </g>
+</svg>
