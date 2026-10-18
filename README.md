@@ -3,13 +3,30 @@
 </p>
 
   
-# Website Recon Engine & A Powerful Crawler
-attack-surface intelligence for gray-hat operators
+# Website Recon Engine & A Powerful Crawler ● attack-surface intelligence for gray-hat operators
 
-https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white
-https://img.shields.io/badge/License-MIT-green?style=for-the-badge
-https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge
-https://img.shields.io/badge/Author-SYLHETYHACKVENGER-red?style=for-the-badge
+<div align="center">
+
+![Security Research](https://img.shields.io/badge/DOMAIN-SECURITY_RESEARCH-8B0000?style=for-the-badge&logo=hackthebox&logoColor=white)
+![Platform](https://img.shields.io/badge/PLATFORM-LINUX-111111?style=for-the-badge&logo=linux&logoColor=white)
+![Shell](https://img.shields.io/badge/INTERFACE-TERMINAL-1A1A1A?style=for-the-badge&logo=gnubash&logoColor=red)
+![License](https://img.shields.io/github/license/sylhetyhackvenger/Silkfang?style=for-the-badge&color=8B0000&label=LICENSE)
+![Stars](https://img.shields.io/github/stars/sylhetyhackvenger/Silkfang?style=for-the-badge&color=8B0000&logo=github)
+![Forks](https://img.shields.io/github/forks/sylhetyhackvenger/Silkfang?style=for-the-badge&color=222222&logo=git)
+![Issues](https://img.shields.io/github/issues/sylhetyhackvenger/Silkfang?style=for-the-badge&color=660000&logo=github)
+![Last Commit](https://img.shields.io/github/last-commit/sylhetyhackvenger/Silkfang?style=for-the-badge&color=111111&logo=git)
+![Repo Size](https://img.shields.io/github/repo-size/sylhetyhackvenger/Silkfang?style=for-the-badge&color=333333)
+![Top Language](https://img.shields.io/github/languages/top/sylhetyhackvenger/Silkfang?style=for-the-badge&color=8B0000)
+![SILKFANG](https://img.shields.io/badge/%E2%96%B6-SILKFANG-8B0000?style=for-the-badge&logo=probot&logoColor=white)
+![Recon](https://img.shields.io/badge/MODE-RECON-111111?style=for-the-badge)
+![Research](https://img.shields.io/badge/RESEARCH-CYBERSECURITY-660000?style=for-the-badge)
+![Ethics](https://img.shields.io/badge/USE-AUTHORIZED_LABS-202020?style=for-the-badge)
+![Status](https://img.shields.io/badge/BUILD-SEE_REPOSITORY-333333?style=for-the-badge)
+</div>
+
+**`SILENT. SHARP. PRECISE.`**
+
+</div>
 
 </div>
 
